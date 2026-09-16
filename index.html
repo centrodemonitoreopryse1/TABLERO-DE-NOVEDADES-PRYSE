@@ -1,0 +1,539 @@
+[index.html.html](https://github.com/user-attachments/files/32300559/index.html.html)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tablero de Guardia — Bitácora 15–16/09/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A1220; --panel: #101B31; --panel-2: #0D1728;
+    --border: #1E2D48; --border-soft: #16233B; --text: #E7EDF7; --text-muted: #8AA0C2; --text-dim: #566A8E;
+    --teal: #2AC9B8; --teal-soft: rgba(42,201,184,0.12); --amber: #F0A93E; --amber-soft: rgba(240,169,62,0.14);
+    --red: #F14C6B; --red-soft: rgba(241,76,107,0.14); --green: #33C077; --green-soft: rgba(51,192,119,0.13);
+    --display: 'Space Grotesk', sans-serif; --body: 'Inter', sans-serif; --mono: 'IBM Plex Mono', monospace;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1100px 500px at 12% -10%, rgba(42,201,184,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(240,169,62,0.06), transparent 55%),
+      var(--bg);
+    color: var(--text); font-family: var(--body); line-height: 1.5; padding: 0 0 64px 0;
+  }
+  ::selection{ background: var(--teal); color:#062420; }
+  .masthead{
+    border-bottom: 1px solid var(--border-soft);
+    padding: 28px clamp(18px, 4vw, 56px) 22px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap: 24px; flex-wrap: wrap; position: relative;
+  }
+  .masthead::before{
+    content:""; position:absolute; left:0; right:0; top:0; height:2px;
+    background: linear-gradient(90deg, transparent, var(--teal) 20%, var(--teal) 80%, transparent); opacity:0.55;
+  }
+  .brand-row{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .brand-mark{
+    width:34px; height:34px; border-radius:9px;
+    background: linear-gradient(135deg, var(--teal), #157A6E);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); font-weight:600; font-size:13px; color:#04201B; flex-shrink:0;
+  }
+  .eyebrow{ font-family: var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--text-dim); }
+  h1{ font-family: var(--display); font-weight:600; font-size: clamp(24px, 3.4vw, 34px); margin: 2px 0 6px; letter-spacing:-0.01em; }
+  .sub{ color: var(--text-muted); font-size:14px; max-width: 720px; }
+  .status-pill{
+    font-family: var(--mono); font-size:12.5px; letter-spacing:.03em;
+    display:inline-flex; align-items:center; gap:8px;
+    background: var(--panel); border:1px solid var(--border); padding: 9px 14px; border-radius: 999px; color: var(--text-muted);
+  }
+  .dot{ width:8px; height:8px; border-radius:50%; background: var(--teal); box-shadow:0 0 0 3px var(--teal-soft); animation: pulse 2.4s infinite ease-in-out; }
+  @keyframes pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.4;} }
+  @media (prefers-reduced-motion: reduce){ .dot{ animation:none; } }
+  .wrap{ padding: 30px clamp(18px, 4vw, 56px) 0; max-width: 1360px; margin:0 auto; }
+  section{ margin-bottom: 40px; }
+  .section-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .section-num{ font-family: var(--mono); color: var(--teal); font-size:12.5px; }
+  .section-title{ font-family: var(--display); font-size:19px; font-weight:600; }
+  .section-note{ color: var(--text-dim); font-size:12.5px; margin-left:auto; font-family: var(--mono); }
+  .kpis{ display:grid; grid-template-columns: repeat(5, 1fr); gap:14px; }
+  @media (max-width: 980px){ .kpis{ grid-template-columns: repeat(2,1fr);} }
+  .kpi{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--border); border-radius:14px; padding:18px 18px 16px;
+  }
+  .kpi .label{ font-size:11.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; font-family: var(--mono); }
+  .kpi .num{ font-family: var(--display); font-size: 32px; font-weight:600; margin-top:8px; }
+  .kpi .foot{ font-size:12px; color: var(--text-muted); margin-top:4px; }
+  .kpi.accent-red .num{ color: var(--red); }
+  .kpi.accent-amber .num{ color: var(--amber); }
+  .kpi.accent-green .num{ color: var(--green); }
+  .kpi.accent-teal .num{ color: var(--teal); }
+  .table-card{ background: var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  thead th{
+    text-align:left; font-family: var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color: var(--text-dim); padding:13px 16px; border-bottom:1px solid var(--border); background: var(--panel-2);
+  }
+  tbody td{ padding:12px 16px; border-bottom:1px solid var(--border-soft); color: var(--text); vertical-align:top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: rgba(255,255,255,0.02); }
+  td.num, th.num{ font-family: var(--mono); text-align:right; }
+  .badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-family: var(--mono); font-size:11px; letter-spacing:.03em; white-space:nowrap; }
+  .badge.ok{ background: var(--green-soft); color: var(--green); }
+  .badge.dev{ background: var(--red-soft); color: var(--red); }
+  .badge.nr{ background: var(--amber-soft); color: var(--amber); }
+  .badge-dot{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .muted{ color: var(--text-muted); }
+  .two-col{ display:grid; grid-template-columns: 1fr 1.15fr; gap: 20px; align-items:start; }
+  @media (max-width: 980px){ .two-col{ grid-template-columns:1fr; } }
+  .dev-item{ border:1px solid var(--border); border-left: 3px solid var(--amber); background: var(--panel); border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .dev-item .row1{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:8px; flex-wrap:wrap; }
+  .dev-item .ooad{ font-family: var(--display); font-weight:600; font-size:15px; }
+  .dev-item .hora{ font-family: var(--mono); color: var(--amber); font-size:13px; }
+  .dev-item .who{ font-size:12.5px; color:var(--text-muted); margin-bottom:4px; }
+  .dev-item .note{ font-size:12.5px; color: var(--text-dim); }
+  .empty-box{ border:1px dashed var(--border); border-radius:10px; padding:20px; color: var(--text-dim); font-size:13.5px; text-align:center; background: var(--panel); }
+  .hito-item{ border:1px solid var(--border); background: var(--panel); border-radius:10px; padding:14px 16px; margin-bottom:12px; border-left: 3px solid var(--amber); }
+  .hito-item .row1{ display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; flex-wrap:wrap; }
+  .hito-item .title{ font-family: var(--display); font-weight:600; font-size:14px; }
+  .hito-item .meta{ font-family: var(--mono); font-size:11px; color: var(--text-dim); white-space:nowrap; }
+  .hito-item .loc{ font-size:12px; color: var(--text-muted); margin-bottom:5px; }
+  .hito-item .note{ font-size:12.5px; color: var(--text-muted); }
+  .reg-grid{ display:grid; grid-template-columns: 1.3fr 1fr; gap:20px; }
+  @media (max-width: 980px){ .reg-grid{ grid-template-columns:1fr; } }
+  .reg-card{ background: var(--panel); border:1px solid var(--border); border-radius:14px; padding:20px; }
+  .reg-stats{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 6px;}
+  .stat-box{ background: var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:12px 14px; }
+  .stat-box .k{ font-family: var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em; }
+  .stat-box .v{ font-family: var(--display); font-size:20px; font-weight:600; margin-top:4px; }
+  .reg-notes{ font-size:13px; color: var(--text-muted); }
+  .reg-notes li{ margin-bottom:8px; }
+  .err-card{ background: var(--panel); border:1px solid var(--border); border-radius:14px; padding: 6px 0; }
+  .err-item{ display:flex; gap:12px; padding: 13px 20px; border-bottom:1px solid var(--border-soft); font-size:13.5px; color: var(--text-muted); }
+  .err-item:last-child{ border-bottom:none; }
+  .err-icon{ font-family: var(--mono); color: var(--amber); flex-shrink:0; font-size:12px; margin-top:2px; }
+  .act-card{ background: var(--panel); border:1px solid var(--border); border-radius:14px; padding: 6px 0; overflow:hidden; overflow-x:auto; }
+  .reg-table{ width:100%; border-collapse:collapse; font-size:12.5px; font-family: var(--mono); }
+  .reg-table thead th{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color: var(--text-dim); padding:10px 12px; border-bottom:1px solid var(--border); background: var(--panel-2); }
+  .reg-table tbody td{ padding:8px 12px; border-bottom:1px solid var(--border-soft); color: var(--text); }
+  .reg-table tbody tr:last-child td{ border-bottom:none; }
+  .reg-table tbody tr:hover{ background: rgba(255,255,255,0.02); }
+  .pill{ display:inline-flex; padding:3px 9px; border-radius:999px; font-size:10px; font-family:var(--mono); letter-spacing:.02em; }
+  .pill.gr{ background:var(--green-soft); color:var(--green); }
+  .pill.rd{ background:var(--red-soft); color:var(--red); }
+  .pill.am{ background:var(--amber-soft); color:var(--amber); }
+  .pill.tl{ background:var(--teal-soft); color:var(--teal); }
+  .pill.bl{ background:rgba(100,130,200,0.12); color:#8AA0C2; }
+  .mx{ border-left:3px solid var(--amber); padding-left:10px; margin-bottom:10px; }
+  .ab{ font-family:var(--display); font-weight:600; font-size:15px; margin-bottom:4px; }
+  .rt{ font-size:12px; color:var(--text-muted); }
+  .rt b{ color:var(--text); font-weight:600; }
+  .scat{ display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
+  footer{
+    max-width:1360px; margin: 40px auto 0; padding: 20px clamp(18px,4vw,56px) 0;
+    border-top:1px solid var(--border-soft); color: var(--text-dim); font-size:12px; font-family: var(--mono);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+</style>
+</head>
+<body>
+<div class="masthead">
+  <div>
+    <div class="brand-row">
+      <div class="brand-mark">CE</div>
+      <span class="eyebrow">Centro de Enlace · Monitoreo de Bitácora Diaria</span>
+    </div>
+    <h1>Tablero de Avances — Guardia 15–16/09/2026</h1>
+    <div class="sub">Cierres vespertinos del 15/09, reportes matutinos del 16/09, supervisiones virtuales nocturnas e incidentes relevantes.</div>
+  </div>
+  <div class="status-pill"><span class="dot"></span> 14 estados · 0 FT formal · 13 SV</div>
+</div>
+<div class="wrap">
+
+<section><div class="kpis">
+  <div class="kpi accent-teal"><div class="label">Registros reales</div><div class="num">47</div><div class="foot">21 el 15 · 26 el 16</div></div>
+  <div class="kpi accent-green"><div class="label">Reportado completo</div><div class="num">47</div><div class="foot">100% de filas con estatus</div></div>
+  <div class="kpi accent-green"><div class="label">Fuera de tiempo</div><div class="num">0</div><div class="foot">ningún FT formal</div></div>
+  <div class="kpi accent-amber"><div class="label">Desviación horaria</div><div class="num">3</div><div class="foot">z &lt; −1.5 (BCS, Sinaloa, Sonora)</div></div>
+  <div class="kpi accent-teal"><div class="label">Supervisiones SV</div><div class="num">13</div><div class="foot">Kevin D. Maldonado · faltan 2</div></div>
+</div></section>
+
+<section>
+  <div class="section-head">
+    <span class="section-num">01</span>
+    <span class="section-title">Estatus por Estado / OOAD</span>
+    <span class="section-note">0 de 14 estados con FT formal · 3 con desviación horaria</span>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Estado / OOAD</th><th>Coordinador</th>
+          <th class="num">Reportes</th><th class="num">Completos</th>
+          <th class="num">Fuera de tiempo</th><th>Estatus</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">SINALOA</td>
+          <td class="muted">Raúl Gallardo Velázquez</td>
+          <td class="num">3</td><td class="num">3</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge nr"><span class="badge-dot"></span>Desv. horaria</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">BAJA CALIFORNIA SUR</td>
+          <td class="muted">Leoncio Coronado Galindo</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge nr"><span class="badge-dot"></span>Desv. horaria</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">SONORA</td>
+          <td class="muted">Gustavo Alonso Rascón Evans</td>
+          <td class="num">3</td><td class="num">3</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge nr"><span class="badge-dot"></span>Desv. horaria</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">AGUASCALIENTES</td>
+          <td class="muted">Ricardo Nandi</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">BAJA CALIFORNIA</td>
+          <td class="muted">Edgar Acosta Escárcega</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">CHIHUAHUA</td>
+          <td class="muted">Héctor Gabriel Bolly</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">COAHUILA</td>
+          <td class="muted">César Francisco Cedillo Pérez</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">DURANGO</td>
+          <td class="muted">Héctor Alfonso Lujan Floriano</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">JALISCO</td>
+          <td class="muted">Mario Alberto Flores Aleissa</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">NAYARIT</td>
+          <td class="muted">Aarón Ricardo Palma Román</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">NUEVO LEÓN</td>
+          <td class="muted">José Antonio Ramos Aguilar</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">SAN LUIS POTOSÍ</td>
+          <td class="muted">Adrián Leyva</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">TAMAULIPAS</td>
+          <td class="muted">Ronald Hernández</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">ZACATECAS</td>
+          <td class="muted">Eduardo Ayala López</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">IMSS CENTRALES</td>
+          <td class="muted">Ángel Larragoiti</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--display); font-weight:600;">MONITOREO</td>
+          <td class="muted">Kevin Daniel Maldonado</td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="num" style="color:var(--text-dim)">0</td>
+          <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12px;color:var(--text-dim);margin-top:12px;font-family:var(--mono);">Sinaloa, BCS y Sonora están marcados con desviación horaria por cierre anticipado (zona Pacífico), no por retraso. Todos los estatus formales son REPORTADO COMPLETO.</p>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-num">02</span>
+    <span class="section-title">Desviaciones e hitos</span>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="section-title" style="font-size:14px; color:var(--amber); margin-bottom:10px;">Desviaciones horarias (|z| ≥ 1.5)</div>
+      <div class="dev-item">
+        <div class="row1"><span class="ooad">BAJA CALIFORNIA SUR</span><span class="hora">05:00 · z = −1.74</span></div>
+        <div class="who">Leoncio Coronado Galindo · Matutino 16/09</div>
+        <div class="note">Cierre 60 min antes del promedio matutino (μ = 06:00). Motivo: horario de zona Pacífico. Observación declara desfase explícitamente.</div>
+      </div>
+      <div class="dev-item">
+        <div class="row1"><span class="ooad">SINALOA</span><span class="hora">05:00 · z = −1.74</span></div>
+        <div class="who">Raúl Gallardo Velázquez · Matutino 16/09</div>
+        <div class="note">Cierre 60 min anticipado. Misma causa de zona horaria. Reporta además 4 códigos plata en permanencia.</div>
+      </div>
+      <div class="dev-item">
+        <div class="row1"><span class="ooad">SONORA</span><span class="hora">05:05 · z = −1.60</span></div>
+        <div class="who">Gustavo Alonso Rascón Evans · Matutino 16/09</div>
+        <div class="note">Cierre 55 min anticipado por zona Pacífico. Observación declara desfase.</div>
+      </div>
+      <div class="dev-item">
+        <div class="row1"><span class="ooad">SINALOA</span><span class="hora">17:03 · z = −1.45</span></div>
+        <div class="who">Raúl Gallardo Velázquez · Vespertino 15/09</div>
+        <div class="note">Cierre vespertino 51 min antes del promedio (μ = 17:53). Dentro del umbral pero consistente con el patrón de zona occidental.</div>
+      </div>
+      <div class="dev-item">
+        <div class="row1"><span class="ooad">BAJA CALIFORNIA</span><span class="hora">17:03 · z = −1.45</span></div>
+        <div class="who">Edgar Acosta Escárcega · Vespertino 15/09</div>
+        <div class="note">Patrón idéntico a Sinaloa. Zona Pacífico.</div>
+      </div>
+      <div class="empty-box" style="margin-top:8px;text-align:left;">
+        <b style="color:var(--text-muted)">Supervisión virtual:</b> 13 registros (22:30 del 15/09 → 02:48 del 16/09).<br>
+        Faltan SV de: <b>DURANGO</b> y <b>NUEVO LEÓN</b>.<br>
+        SV CHIHUAHUA aparece duplicado (22:30 y 02:02).<br>
+        <b style="color:var(--text-muted)">Fuera de tiempo formal:</b> 0 estados. Todos están marcados REPORTADO COMPLETO.
+      </div>
+    </div>
+    <div>
+      <div class="section-title" style="font-size:14px; color:var(--amber); margin-bottom:10px;">Incidentes relevantes (hitos)</div>
+      <div class="hito-item">
+        <div class="row1"><span class="title">ALTA DE CÓDIGO PLATA</span><span class="meta">12:00 · 15/09</span></div>
+        <div class="loc">Sinaloa · HGR#1 · CULIACÁN · Folio 4290</div>
+        <div class="note">Se da de alta paciente que ingresó por herida de arma de fuego y sale en carro particular. Sin especificar si se dio aviso al Ministerio Público.</div>
+      </div>
+      <div class="hito-item">
+        <div class="row1"><span class="title">INSTRUCCIONES DE SEGURIDAD</span><span class="meta">17:31 · 15/09</span></div>
+        <div class="loc">IMSS Centrales · CECOE · Folio 4291</div>
+        <div class="note">Indicaciones ante extorsión telefónica, intrusión, vandalismo, robo, detonaciones de arma de fuego en inmediaciones de unidades, ingreso y/o consumo de bebidas alcohólicas.</div>
+      </div>
+      <div class="hito-item">
+        <div class="row1"><span class="title">ORDEN DEL DÍA + DECÁLOGO</span><span class="meta">05:12 · 16/09</span></div>
+        <div class="loc">IMSS Centrales · CECOE · Folio 4320</div>
+        <div class="note">Integra orden del día y decálogo de trato digno.</div>
+      </div>
+      <div class="hito-item">
+        <div class="row1"><span class="title">FILTRACIONES POR LLUVIAS</span><span class="meta">07:20 · 16/09</span></div>
+        <div class="loc">Sonora · CSS · HUATABAMPO · Folio 4336</div>
+        <div class="note">Se registran filtraciones de agua en el CSS por fuertes lluvias en diferentes áreas de la unidad médica.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-num">03</span>
+    <span class="section-title">Análisis de regresión — determinantes del horario de cierre</span>
+    <span class="section-note">28 cierres estatales</span>
+  </div>
+  <div class="reg-grid">
+    <div class="reg-card">
+      <table class="reg-table">
+        <thead>
+          <tr><th>Modelo</th><th>Variable</th><th>Coef.</th><th>t</th><th>p</th><th>R²</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="3" style="vertical-align:middle;font-weight:600;">1</td>
+            <td>Intercepto</td><td>6.32</td><td>57.62</td><td>&lt;0.0001</td><td rowspan="3" style="vertical-align:middle;font-weight:600;">0.997</td>
+          </tr>
+          <tr><td>Turno (ves=1)</td><td>+11.88</td><td>86.54</td><td>&lt;0.0001</td></tr>
+          <tr><td>Zona occ=1</td><td>-0.91</td><td>-6.37</td><td>&lt;0.0001</td></tr>
+          <tr>
+            <td rowspan="2" style="vertical-align:middle;font-weight:600;">2</td>
+            <td>Intercepto</td><td>6.00</td><td>38.91</td><td>&lt;0.0001</td><td rowspan="2" style="vertical-align:middle;font-weight:600;">0.991</td>
+          </tr>
+          <tr><td>Turno (ves=1)</td><td>+11.88</td><td>54.51</td><td>&lt;0.0001</td></tr>
+          <tr>
+            <td style="font-weight:600;">3</td>
+            <td>|z| ~ hora</td><td>r = -0.04</td><td>--</td><td>0.82</td><td>0.002</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px; font-size:12px; color:var(--text-dim); font-family:var(--mono);">
+        Modelo 1: hora = 6.32 + 11.88·turno - 0.91·zona occ<br>
+        Modelo 2: hora = 6.00 + 11.88·turno<br>
+        Modelo 3: correlación |z| vs hora (n=28)
+      </div>
+    </div>
+    <div class="reg-card">
+      <div class="reg-stats">
+        <div class="stat-box"><div class="k">Casos FT formales</div><div class="v" style="color:var(--green)">0</div></div>
+        <div class="stat-box"><div class="k">N cierres</div><div class="v">28</div></div>
+        <div class="stat-box"><div class="k">Vespertino primero</div><div class="v">17:03</div></div>
+        <div class="stat-box"><div class="k">Vespertino último</div><div class="v">18:41</div></div>
+        <div class="stat-box"><div class="k">Matutino primero</div><div class="v">05:00</div></div>
+        <div class="stat-box"><div class="k">Matutino último</div><div class="v">06:36</div></div>
+      </div>
+      <ul class="reg-notes" style="margin-top:14px; padding-left:18px;">
+        <li><b>R² = 0.997:</b> la hora de cierre se explica casi por completo con turno y zona horaria.</li>
+        <li><b>Turno domina:</b> el vespertino cierra en promedio 11 h 53 min después del matutino (p &lt; 0.0001).</li>
+        <li><b>Zona occidente:</b> los OOAD del Pacífico cierran 55 min antes (beta = -0.91 h, p &lt; 0.0001). Esto es sesgo de zona horaria, no desempeño.</li>
+        <li><b>Cadencia vespertino:</b> beta = 7.74 min/reporte (r = 0.93, p &lt; 0.0001). Cada estado adicional reporta supone ~8 min más.</li>
+        <li><b>Cadencia matutino:</b> beta = 7.51 min/reporte (r = 0.92, p &lt; 0.0001). Patrón casi idéntico.</li>
+        <li><b>Sin casos fuera de tiempo formal</b> -- la regresión logística de probabilidad de retraso no es estimable.</li>
+        <li><b>|z| ~ hora</b> (r = -0.04, p = 0.82): las desviaciones absolutas no dependen de la hora del cierre.</li>
+        <li><b>n = 28</b> (14 vespertinos + 14 matutinos). No se incluyen SV, Monitoreo ni IMSS Centrales.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-num">04</span>
+    <span class="section-title">Errores e inconsistencias detectadas</span>
+  </div>
+  <div class="err-card">
+    <div class="err-item"><span class="err-icon">01</span><span><b>SLA vacío en 45 de 47 filas.</b> Solo 2 registros de IMSS Centrales (folio 4291 y 4320) contienen texto en ese campo; los 45 restantes están vacíos. El campo no está validado en la plataforma de captura.</span></div>
+    <div class="err-item"><span class="err-icon">02</span><span><b>Typo "FILTACIONES" en observaciones.</b> Folio 4336 (Sonora): dice "SE REGISTRAN FILTACIONES DE AGUA". Lo correcto es <i>filtraciones</i>.</span></div>
+    <div class="err-item"><span class="err-icon">03</span><span><b>Acento grave en apellido.</b> "VELÀZQUEZ" aparece en los folios 4290, 4295 y 4322. El acento grave (À) es incorrecto; debe ser <i>Velázquez</i> con acento agudo.</span></div>
+    <div class="err-item"><span class="err-icon">04</span><span><b>Municipio = nombre de estado.</b> En 6 filas de supervisión virtual el campo MUNICIPIO contiene el nombre del estado ("CHIHUAHUA", "SINALOA", "COAHUILA", "SONORA", "JALISCO") en lugar del municipio real.</span></div>
+    <div class="err-item"><span class="err-icon">05</span><span><b>SV CHIHUAHUA duplicado.</b> Dos registros de supervisión virtual para Chihuahua: folio 4307 (22:30) y folio 4317 (02:02). Ningún otro estado tiene SV duplicada; posible error de captura o doble envío.</span></div>
+    <div class="err-item"><span class="err-icon">06</span><span><b>SV faltantes: Durango y Nuevo León.</b> De los 14 estados, 12 tienen al menos una supervisión virtual registrada. Durango y Nuevo León no registran SV en este periodo.</span></div>
+    <div class="err-item"><span class="err-icon">07</span><span><b>Alta de código Plata como "sin relevancia".</b> El folio 4290 reporta el alta de un paciente por herida de arma de fuego y está clasificado como evento de incidencia (ALTA DE CODIGO PLATA) pero el estatus general del turno lo marca REPORTADO COMPLETO sin nota de escalamiento a la fiscalía. No se puede verificar si se notificó al MP.</span></div>
+    <div class="err-item"><span class="err-icon">08</span><span><b>Unidad vacía en cierres estatales.</b> Los 28 cierres de turno (vespertinos y matutinos) dejan los campos UNIDAD y MUNICIPIO vacíos, mientras que las incidencias sí los llenan. Inconsistencia en la captura.</span></div>
+    <div class="err-item"><span class="err-icon">09</span><span><b>Nombre del coordinador inconsistente.</b> En el archivo previo (29-30 ago) el coordinador de Aguascalientes aparecía como "RICARDO NORI"; aquí figura como "RICARDO NANDI". No se puede determinar cuál es correcto con datos de este archivo únicamente, pero la diferencia es notable.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-num">05</span>
+    <span class="section-title">Acciones recomendadas</span>
+  </div>
+  <div class="act-card">
+    <table class="reg-table">
+      <thead>
+        <tr><th>Prioridad</th><th>OOAD / Área</th><th>Acción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="pill rd">1</span></td><td>Sinaloa / clasificación</td><td>Verificar que el alta del paciente por herida de arma de fuego (folio 4290) haya sido notificada al Ministerio Público. El archivo no registra escalamiento fiscal.</td></tr>
+        <tr><td><span class="pill rd">2</span></td><td>Control de SV</td><td>Investigar por qué Durango y Nuevo León no registraron supervisión virtual en este periodo; y si la doble SV de Chihuahua fue error de captura o envío duplicado.</td></tr>
+        <tr><td><span class="pill am">3</span></td><td>Plataforma de captura</td><td>Activar validación obligatoria del campo SLA: hoy está vacío en el 96% de los registros. El campo debe contener la instrucción o referencia normativa que aplica al evento.</td></tr>
+        <tr><td><span class="pill am">4</span></td><td>Normalización de municipios</td><td>Separar ESTADO y MUNICIPIO en columnas distintas y añadir catálogo desplegable. Actualmente 6 de 8 municipios capturados son en realidad nombres de estado.</td></tr>
+        <tr><td><span class="pill am">5</span></td><td>Zona horaria</td><td>Incluir campo de zona horaria o registrar todas las horas en hora del centro. Los OOAD del Pacífico cierran 55 min antes en crudo (p &lt; 0.0001), lo que sesga toda comparación horaria.</td></tr>
+        <tr><td><span class="pill tl">6</span></td><td>Corrección ortográfica</td><td>Corregir "FILTACIONES" → filtraciones y "VELÀZQUEZ" → Velázquez en la base de datos y activar corrector ortográfico en la plataforma.</td></tr>
+        <tr><td><span class="pill bl">7</span></td><td>Unidad / Municipio en cierres</td><td>Hacer obligatorio capturar UNIDAD y MUNICIPIO en todos los registros, no solo en incidencias.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <span class="section-num">06</span>
+    <span class="section-title">Registro completo</span>
+    <span class="section-note">47 filas · folios 4290–4336</span>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th class="num">Folio</th><th>OOAD</th><th>Coordinador</th>
+          <th>Unidad</th><th>Municipio</th><th>Incidencia</th>
+          <th class="num">Fecha</th><th class="num">Hora</th><th>SLA</th>
+          <th>Estatus</th><th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4290</td><td>SINALOA</td><td class="muted" style="font-size:12px">RAUL GALLARDO VELÀZQUEZ</td><td>HGR#1</td><td>CULIACAN</td><td>ALTA DE CODIGO PLATA</td><td class="num">15/09/2026</td><td class="num">12:00</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">SE DA DE ALTA PACIENTE QUE INGRESO POR HERIDA DE ARMA DE FUEGO SALE EN CARRO PARTICULAR</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4291</td><td>IMSS CENTRALES</td><td class="muted" style="font-size:12px">ANGEL LARRAGOITI</td><td>CECOE</td><td></td><td>INSTRUCCIONES A TRABAJAR</td><td class="num">15/09/2026</td><td class="num">17:31</td><td style="font-size:11px;color:var(--text-dim)">Giren las indicaciones pertinentes para mantener la segurida</td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4292</td><td>CHIHUAHUA</td><td class="muted" style="font-size:12px">HECTOR GABRIEL BOLLY</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:00</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4293</td><td>COAHUILA</td><td class="muted" style="font-size:12px">CESAR FRANCISCO CEDILLO PEREZ</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:00</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4294</td><td>NUEVO LEÓN</td><td class="muted" style="font-size:12px">JOSE ANTONIO RAMOS AGUILAR</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:01</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4295</td><td>SINALOA</td><td class="muted" style="font-size:12px">RAUL GALLARDO VELÀZQUEZ</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">17:02</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 4 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4296</td><td>BAJA CALIFORNIA</td><td class="muted" style="font-size:12px">EDGAR ACOSTA ESCARCEGA</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">17:02</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4297</td><td>NAYARIT</td><td class="muted" style="font-size:12px">AARON RICARDO PALMA ROMAN</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:02</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4298</td><td>ZACATECAS</td><td class="muted" style="font-size:12px">EDUARDO AYALA LOPEZ</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:03</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4299</td><td>SONORA</td><td class="muted" style="font-size:12px">GUSTAVO ALONSO RASCON EVANS</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">17:04</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4300</td><td>AGUASCALIENTES</td><td class="muted" style="font-size:12px">RICARDO NANDI</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:09</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4301</td><td>DURANGO</td><td class="muted" style="font-size:12px">HECTOR ALFONSO LUJAN FLORIANO</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:09</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4302</td><td>BAJA CALIFORNIA SUR</td><td class="muted" style="font-size:12px">LEONCIO CORONADO GALINDO</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">17:06</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4303</td><td>JALISCO</td><td class="muted" style="font-size:12px">MARIO ALBERTO FLORES ALEISSA</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:16</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4304</td><td>TAMAULIPAS</td><td class="muted" style="font-size:12px">RONALD HERNANDEZ</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:41</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4305</td><td>SAN LUIS POTOSÍ</td><td class="muted" style="font-size:12px">ADRIAN LEYVA</td><td></td><td></td><td>REPORTE VESPERTINO</td><td class="num">15/09/2026</td><td class="num">18:41</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4306</td><td>MONITOREO</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td></td><td></td><td>REPORTE MONITOREO</td><td class="num">15/09/2026</td><td class="num">22:00</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4307</td><td>SV CHIHUAHUA</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>UMF#8</td><td>CHIHUAHUA</td><td>SUPERVISION VIRTUAL</td><td class="num">15/09/2026</td><td class="num">22:30</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4308</td><td>SV NAYARIT</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HGZ#1</td><td>TEPIC</td><td>SUPERVISION VIRTUAL</td><td class="num">15/09/2026</td><td class="num">22:57</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4309</td><td>SV SINALOA</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>UMF#4</td><td>SINALOA</td><td>SUPERVISION VIRTUAL</td><td class="num">15/09/2026</td><td class="num">23:22</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4310</td><td>SV SAN LUIS POTOSÍ</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HGZ#1</td><td>SLP</td><td>SUPERVISION VIRTUAL</td><td class="num">15/09/2026</td><td class="num">23:35</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4311</td><td>SV COAHUILA</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>UMF#60</td><td>COAHUILA</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">00:03</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4312</td><td>SV BAJA CALIFORNIA SUR</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>UMF#8</td><td>BJ CALIFORNIA SUR</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">00:23</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4313</td><td>SV SONORA</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HGZ#16</td><td>SONORA</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">00:48</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4314</td><td>SV AGUASCALIENTES</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HGZ#2</td><td>AGUASCALIENTES</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">01:10</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4315</td><td>SV BAJA CALIFORNIA</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HGO#7</td><td>BAJA CALIFORNIA</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">01:19</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4316</td><td>SV ZACATECAS</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HR#51</td><td>VILLAREAL</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">01:34</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4317</td><td>SV CHIHUAHUA</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>UMF#1</td><td>CHIHUAHUA</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">02:02</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4318</td><td>SV JALISCO</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HGR#45</td><td>JALISCO</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">02:25</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4319</td><td>SV TAMAULIPAS</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td>HGR#6</td><td>CD MADERO</td><td>SUPERVISION VIRTUAL</td><td class="num">16/09/2026</td><td class="num">02:48</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 5 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4320</td><td>IMSS CENTRALES</td><td class="muted" style="font-size:12px">JOSE DE JESUS ANGEL AGUILAR</td><td>CECOE</td><td></td><td>ORDEN DE DIA</td><td class="num">16/09/2026</td><td class="num">05:12</td><td style="font-size:11px;color:var(--text-dim)">INTEGRA ORDEN DEL DIA Y DECALOGO DE TRATO DIGNO</td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4321</td><td>BAJA CALIFORNIA SUR</td><td class="muted" style="font-size:12px">LEONCIO CORONADO GALINDO</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">05:00</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4322</td><td>SINALOA</td><td class="muted" style="font-size:12px">RAUL GALLARDO VELÀZQUEZ</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">05:00</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA REPORTANDO 4 CODIGOS PLATAS EN PERMANENCIA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4323</td><td>ZACATECAS</td><td class="muted" style="font-size:12px">EDUARDO AYALA LOPEZ</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:00</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4324</td><td>JALISCO</td><td class="muted" style="font-size:12px">MARIO ALBERTO FLORES ALEISSA</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:03</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4325</td><td>SONORA</td><td class="muted" style="font-size:12px">GUSTAVO ALONSO RASCON EVANS</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">05:05</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4326</td><td>CHIHUAHUA</td><td class="muted" style="font-size:12px">HECTOR GABRIEL BOLLY</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:12</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4327</td><td>NUEVO LEÓN</td><td class="muted" style="font-size:12px">JOSE ANTONIO RAMOS AGUILAR</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:16</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4328</td><td>TAMAULIPAS</td><td class="muted" style="font-size:12px">RONALD HERNANDEZ</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:19</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4329</td><td>SAN LUIS POTOSÍ</td><td class="muted" style="font-size:12px">ADRIAN LEYVA</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:25</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4330</td><td>COAHUILA</td><td class="muted" style="font-size:12px">CESAR FRANCISCO CEDILLO PEREZ</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:26</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4331</td><td>DURANGO</td><td class="muted" style="font-size:12px">HECTOR ALFONSO LUJAN FLORIANO</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:26</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4332</td><td>NAYARIT</td><td class="muted" style="font-size:12px">AARON RICARDO PALMA ROMAN</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:27</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4333</td><td>AGUASCALIENTES</td><td class="muted" style="font-size:12px">RICARDO NANDI</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">06:36</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr style="color:var(--text-muted)"><td class="num" style="font-variant-numeric:tabular-nums">4334</td><td>MONITOREO</td><td class="muted" style="font-size:12px">KEVIN DANIEL MALDONADO</td><td></td><td></td><td>REPORTE MONITOREO</td><td class="num">16/09/2026</td><td class="num">06:41</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)"></td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4335</td><td>BAJA CALIFORNIA</td><td class="muted" style="font-size:12px">EDGAR ACOSTA ESCARCEGA</td><td></td><td></td><td>REPORTE MATUTINO</td><td class="num">16/09/2026</td><td class="num">05:42</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">REALIZA CIERRE DE NOVEDADES CON HORA DE DIFERENCIA POR HORARIO DE ZONA</td></tr>
+<tr><td class="num" style="font-variant-numeric:tabular-nums">4336</td><td>SONORA</td><td class="muted" style="font-size:12px">GUSTAVO ALONSO RASCON EVANS</td><td>CSS</td><td>HUATABAMPO</td><td>FILTRACIONES DE AGUA POR LLUVIAS</td><td class="num">16/09/2026</td><td class="num">07:20</td><td style="font-size:11px;color:var(--text-dim)"></td><td><span class="badge ok"><span class="badge-dot"></span>Completo</span></td><td style="font-size:12px;color:var(--text-dim)">SE REGISTRAN FILTACIONES DE AGUA EN EL CSS POR FUERTES LLUVIAS EN DIFERENTES AREAS DE LA UNIDAD MEDICA</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <span>Fuente única: tabla 15 AL 16 SEP 2026.xlsx (Hoja1, 47 registros, folios 4290–4336). Todas las cifras, promedios, desviaciones y modelos provienen exclusivamente de este archivo.</span>
+  <span>Tablero de avances autónomo · 15–16/09/2026</span>
+</footer>
+</div>
+</body>
+</html>
