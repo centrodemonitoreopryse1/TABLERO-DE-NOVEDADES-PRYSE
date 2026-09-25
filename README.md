@@ -1,0 +1,590 @@
+[index.html.html](https://github.com/user-attachments/files/32667647/index.html.html)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tablero de Guardia — Bitácora 24 ves – 25 mat / 09/2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0A1220; --panel:#101B31; --panel-2:#0D1728;
+    --border:#1E2D48; --border-soft:#16233B; --text:#E7EDF7; --text-muted:#8AA0C2; --text-dim:#566A8E;
+    --teal:#2AC9B8; --amber:#F0A93E; --amber-soft:rgba(240,169,62,0.14);
+    --red:#F14C6B; --red-soft:rgba(241,76,107,0.14); --green:#33C077; --green-soft:rgba(51,192,119,0.13);
+    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1100px 500px at 12% -10%,rgba(42,201,184,0.10),transparent 60%),
+      radial-gradient(900px 500px at 100% 0%,rgba(240,169,62,0.06),transparent 55%),var(--bg);
+    color:var(--text); font-family:var(--body); line-height:1.5; padding:0 0 64px 0;
+  }
+  .masthead{border-bottom:1px solid var(--border-soft); padding:28px clamp(18px,4vw,56px) 22px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; position:relative}
+  .masthead::before{content:""; position:absolute; left:0; right:0; top:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--teal) 20%,var(--teal) 80%,transparent); opacity:0.55}
+  .brand-row{display:flex; align-items:center; gap:12px; margin-bottom:10px}
+  .brand-mark{width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--teal),#157A6E);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:600; font-size:13px; color:#04201B}
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim)}
+  h1{font-family:var(--display); font-weight:600; font-size:clamp(22px,3.2vw,32px); margin:2px 0 6px}
+  .sub{color:var(--text-muted); font-size:14px; max-width:820px}
+  .status-pill{font-family:var(--mono); font-size:12.5px; display:inline-flex; align-items:center; gap:8px;
+    background:var(--panel); border:1px solid var(--border); padding:9px 14px; border-radius:999px; color:var(--text-muted)}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--amber); box-shadow:0 0 0 3px var(--amber-soft)}
+  .wrap{padding:30px clamp(18px,4vw,56px) 0; max-width:1360px; margin:0 auto}
+  section{margin-bottom:40px}
+  .section-head{display:flex; align-items:baseline; gap:10px; margin-bottom:16px; flex-wrap:wrap}
+  .section-num{font-family:var(--mono); color:var(--teal); font-size:12.5px}
+  .section-title{font-family:var(--display); font-size:19px; font-weight:600}
+  .section-note{color:var(--text-dim); font-size:12.5px; margin-left:auto; font-family:var(--mono)}
+  .kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:14px}
+  @media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:linear-gradient(180deg,var(--panel),var(--panel-2)); border:1px solid var(--border); border-radius:14px; padding:18px}
+  .kpi .label{font-size:11.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; font-family:var(--mono)}
+  .kpi .num{font-family:var(--display); font-size:32px; font-weight:600; margin-top:8px}
+  .kpi .foot{font-size:12px; color:var(--text-muted); margin-top:4px}
+  .kpi.accent-red .num{color:var(--red)} .kpi.accent-amber .num{color:var(--amber)}
+  .kpi.accent-green .num{color:var(--green)} .kpi.accent-teal .num{color:var(--teal)}
+  .timeline-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:22px clamp(14px,3vw,26px) 18px}
+  .timeline-legend{display:flex; gap:18px; margin-bottom:14px; flex-wrap:wrap; font-size:12px; color:var(--text-muted); font-family:var(--mono)}
+  .legend-item{display:flex; align-items:center; gap:7px}
+  .legend-swatch{width:9px; height:9px; border-radius:2px}
+  .timeline-axis{position:relative; height:96px}
+  .timeline-line{position:absolute; left:0; right:0; top:48px; height:1px; background:var(--border)}
+  .timeline-hourmarks{position:absolute; left:0; right:0; top:64px; height:20px}
+  .hm{position:absolute; transform:translateX(-50%); font-family:var(--mono); font-size:10.5px; color:var(--text-dim)}
+  .hm::before{content:""; position:absolute; left:50%; top:-16px; width:1px; height:8px; background:var(--border-soft)}
+  .tpoint{position:absolute; top:38px; width:13px; height:13px; border-radius:50%; transform:translateX(-50%); border:2px solid var(--bg)}
+  .tpoint.ok{background:var(--green); box-shadow:0 0 0 3px var(--green-soft)}
+  .tpoint .tip{visibility:hidden; opacity:0; position:absolute; bottom:22px; left:50%; transform:translateX(-50%);
+    background:#050B15; border:1px solid var(--border); color:var(--text); font-size:11px; font-family:var(--mono);
+    padding:6px 9px; border-radius:8px; white-space:nowrap; z-index:5; transition:opacity .15s}
+  .tpoint:hover .tip{visibility:visible; opacity:1}
+  .table-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:13.5px}
+  thead th{text-align:left; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--text-dim); padding:12px 14px; border-bottom:1px solid var(--border); background:var(--panel-2); white-space:nowrap}
+  tbody td{padding:11px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(255,255,255,0.02)}
+  td.num,th.num{font-family:var(--mono); text-align:right}
+  .badge{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-family:var(--mono); font-size:11px; white-space:nowrap}
+  .badge.ok{background:var(--green-soft); color:var(--green)}
+  .badge.miss{background:var(--red-soft); color:var(--red)}
+  .badge.warn{background:var(--amber-soft); color:var(--amber)}
+  .badge-dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+  .muted{color:var(--text-muted)}
+  .two-col{display:grid; grid-template-columns:1fr 1.15fr; gap:20px; align-items:start}
+  @media(max-width:980px){.two-col{grid-template-columns:1fr}}
+  .empty-box{border:1px dashed var(--border); border-radius:10px; padding:20px; color:var(--text-dim); font-size:13.5px; text-align:center; background:var(--panel)}
+  .hito-item,.dev-item{border:1px solid var(--border); background:var(--panel); border-radius:10px; padding:14px 16px; margin-bottom:12px; border-left:3px solid var(--amber)}
+  .dev-item{border-left-color:var(--red)}
+  .hito-item .row1,.dev-item .row1{display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; flex-wrap:wrap}
+  .hito-item .title,.dev-item .title{font-family:var(--display); font-weight:600; font-size:14px}
+  .hito-item .meta,.dev-item .meta{font-family:var(--mono); font-size:11px; color:var(--text-dim)}
+  .hito-item .loc,.dev-item .loc{font-size:12px; color:var(--text-muted); margin-bottom:5px}
+  .hito-item .note,.dev-item .note{font-size:12.5px; color:var(--text-muted)}
+  .sv-item{border:1px solid var(--border-soft); background:var(--panel-2); border-radius:8px; padding:10px 14px; margin-bottom:8px; font-size:12.5px; color:var(--text-muted); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+  .sv-item .u{color:var(--text); font-family:var(--display); font-weight:600; font-size:13px}
+  .miss-item{border:1px solid var(--border); border-left:3px solid var(--red); background:var(--panel); border-radius:10px; padding:10px 14px; margin-bottom:8px; font-family:var(--display); font-weight:600; font-size:13px}
+  .reg-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:20px}
+  @media(max-width:980px){.reg-grid{grid-template-columns:1fr}}
+  .reg-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:20px}
+  .reg-stats{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .stat-box{background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:12px 14px}
+  .stat-box .k{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em}
+  .stat-box .v{font-family:var(--display); font-size:20px; font-weight:600; margin-top:4px}
+  .chart-wrap{height:260px; margin-top:8px}
+  .reg-notes{font-size:13px; color:var(--text-muted); margin-top:14px; padding-left:18px}
+  .reg-notes li{margin-bottom:8px}
+  .err-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:6px 0}
+  .err-item{display:flex; gap:12px; padding:13px 20px; border-bottom:1px solid var(--border-soft); font-size:13.5px; color:var(--text-muted)}
+  .err-item:last-child{border-bottom:none}
+  .err-icon{font-family:var(--mono); color:var(--amber); flex-shrink:0; font-size:12px; margin-top:2px}
+  footer{max-width:1360px; margin:40px auto 0; padding:20px clamp(18px,4vw,56px) 0; border-top:1px solid var(--border-soft);
+    color:var(--text-dim); font-size:12px; font-family:var(--mono); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+</style>
+</head>
+<body>
+<div class="masthead">
+  <div>
+    <div class="brand-row"><div class="brand-mark">CE</div><span class="eyebrow">Centro de Enlace · Monitoreo de Bitácora Diaria</span></div>
+    <h1>Tablero de Avances — 24 ves / 25 mat · Sep 2026</h1>
+    <div class="sub">Periodo: cierres vespertinos 24, matutinos 25, códigos plata, SV (Kevin D. Maldonado), manifestación trabajadores, persona agresiva (Sonora) y seguimientos CECOE. 1 reporte incompleto (Sonora) · 14/14 OOAD con ambos cierres.</div>
+  </div>
+  <div class="status-pill"><span class="dot"></span> 1 incompleto · 10 SV · 51/52 completos</div>
+</div>
+
+<div class="wrap">
+  <section><div class="kpis" id="kpiGrid"></div></section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Línea de tiempo — matutinos 25/09</span>
+      <span class="section-note">05:30 – 07:00 · 14/14 a tiempo</span>
+    </div>
+    <div class="timeline-card">
+      <div class="timeline-legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--green)"></span> A tiempo</div>
+      </div>
+      <div class="timeline-axis" id="timelineAxis"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Estatus por Estado / OOAD</span>
+      <span class="section-note" id="devCountNote"></span>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Estado / OOAD</th><th>Coordinador</th>
+            <th class="num">Ves 24</th><th class="num">Mat 25</th>
+            <th class="num">Inc.</th><th class="num">SV</th><th>Estatus</th>
+          </tr>
+        </thead>
+        <tbody id="ooadTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Desviaciones, omisiones e hitos</span>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--red);margin-bottom:10px">Incompletos / desviaciones</div>
+        <div id="devList"></div>
+        <div class="section-title" style="font-size:14px;color:var(--red);margin:18px 0 10px">OOAD sin SV en el periodo</div>
+        <div id="missList"></div>
+        <div class="section-title" style="font-size:14px;color:var(--amber);margin:18px 0 10px">Hitos / incidentes</div>
+        <div id="hitoList"></div>
+      </div>
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--teal);margin-bottom:10px">Supervisiones virtuales (Kevin D. Maldonado)</div>
+        <div id="svList"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Análisis de regresión — probabilidad de retraso</span>
+      <span class="section-note">Matutinos 25/09</span>
+    </div>
+    <div class="reg-grid">
+      <div class="reg-card"><div class="chart-wrap"><canvas id="regChart"></canvas></div></div>
+      <div class="reg-card">
+        <div class="reg-stats" id="regStats"></div>
+        <ul class="reg-notes" id="regNotes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <span class="section-title">Errores e inconsistencias</span>
+    </div>
+    <div class="err-card" id="errList"></div>
+  </section>
+</div>
+<footer>
+  <span>Fuente: 25-09-26.xlsx</span>
+  <span>Tablero de avances · 24–25/09/2026</span>
+</footer>
+
+<script>
+const DASH = {
+  "meta": {
+    "fecha": "24 ves – 25 mat / 09/2026",
+    "total_filas": 52,
+    "registros_reales": 52,
+    "ooad_count": 14,
+    "completo": 51,
+    "fuera": 0,
+    "incomp": 1,
+    "sv_count": 10,
+    "ves24": 14,
+    "mat25": 14
+  },
+  "errores": [
+    "Folio 4743 SONORA · PERSONA AGRESIVA 25/09 06:29: ESTATUS REPORTE INCOMPLETO. Falta tipología de Código Morado y se reporta fuera de tiempo.",
+    "Sinaloa tiene dos entradas de REPORTE VESPERTINO el 24/09 (folios 4707 y 4709 a las 18:03). Posible duplicado de captura.",
+    "Typo en folio 4706 (Nayarit vespertino): \"CODIGOD PLATA\" → debería ser \"CÓDIGOS PLATA\".",
+    "Typo en folio 4751: \"DELSUJETO\" → \"DEL SUJETO\".",
+    "SLA vacío en la mayoría; solo registros de CECOE (Casetas Dignas y solicitudes de información) tienen contenido en SLA.",
+    "Sinaloa reporta códigos plata en permanencia: 1–2 en cierres + alta + uno sin custodia.",
+    "Cobertura SV del periodo: 10 OOAD. Sin SV: BAJA CALIFORNIA, CHIHUAHUA, COAHUILA, ZACATECAS.",
+    "No hay reportes matutinos ni vespertinos faltantes de los 14 OOAD operativos.",
+    "Seguimiento prolongado del incidente de persona agresiva en Sonora (HGZ 14 Hermosillo): reportes de falta de fotos, solicitud de hora y explicación de falta de reporte."
+  ],
+  "ooad_summary": [
+    {"ooad": "AGUASCALIENTES", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "RICARDO NANDI", "estatus": "OK", "sv": 1, "hora_mat": "06:41", "ves24": 1, "mat25": 1},
+    {"ooad": "BAJA CALIFORNIA", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "EDGAR ACOSTA ESCARCEGA", "estatus": "OK", "sv": 0, "hora_mat": "06:56", "ves24": 1, "mat25": 1},
+    {"ooad": "BAJA CALIFORNIA SUR", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "LEONCIO CORONADO GALINDO", "estatus": "OK", "sv": 1, "hora_mat": "06:00", "ves24": 1, "mat25": 1},
+    {"ooad": "CHIHUAHUA", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "HECTOR GABRIEL BOLLY", "estatus": "OK", "sv": 0, "hora_mat": "06:34", "ves24": 1, "mat25": 1},
+    {"ooad": "COAHUILA", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "CESAR FRANCISCO CEDILLO PEREZ", "estatus": "OK", "sv": 0, "hora_mat": "06:01", "ves24": 1, "mat25": 1},
+    {"ooad": "DURANGO", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "HECTOR ALFONSO LUJAN FLORIANO", "estatus": "OK", "sv": 1, "hora_mat": "06:51", "ves24": 1, "mat25": 1},
+    {"ooad": "JALISCO", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "MARIO ALBERTO FLORES ALEISSA", "estatus": "OK", "sv": 1, "hora_mat": "06:01", "ves24": 1, "mat25": 1},
+    {"ooad": "NAYARIT", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "AARON RICARDO PALMA ROMAN", "estatus": "OK", "sv": 1, "hora_mat": "06:02", "ves24": 1, "mat25": 1},
+    {"ooad": "NUEVO LEÓN", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "JOSE ANTONIO RAMOS AGUILAR", "estatus": "OK", "sv": 1, "hora_mat": "05:32", "ves24": 1, "mat25": 1},
+    {"ooad": "SAN LUIS POTOSÍ", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "LUCIA RAPETA QUIRINO", "estatus": "OK", "sv": 1, "hora_mat": "06:38", "ves24": 1, "mat25": 1},
+    {"ooad": "SINALOA", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "RAUL GALLARDO VELÀZQUEZ", "estatus": "OK", "sv": 1, "hora_mat": "06:03", "ves24": 1, "mat25": 1},
+    {"ooad": "SONORA", "total": 2, "completo": 1, "fuera": 0, "incomp": 1, "coordinador": "GUSTAVO ALONSO RASCON EVANS", "estatus": "DESVIACIÓN", "sv": 1, "hora_mat": "06:01", "ves24": 1, "mat25": 1},
+    {"ooad": "TAMAULIPAS", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "RONALD HERNANDEZ", "estatus": "OK", "sv": 1, "hora_mat": "06:33", "ves24": 1, "mat25": 1},
+    {"ooad": "ZACATECAS", "total": 2, "completo": 2, "fuera": 0, "incomp": 0, "coordinador": "EDUARDO AYALA LOPEZ", "estatus": "OK", "sv": 0, "hora_mat": "06:00", "ves24": 1, "mat25": 1}
+  ],
+  "deviations": [
+    {
+      "folio": 4743,
+      "ooad": "SONORA",
+      "incidencia": "PERSONA AGRESIVA",
+      "hora": "06:29",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTE INCOMPLETO",
+      "unidad": "HGZ 14",
+      "municipio": "HERMOSILLO",
+      "observaciones": "SE REPORTA INCIDENTE DE AGRESION MASCULINO HACIA GUARDIA SIN QUE SE REPORTE TIPOLOGIA DE CODIGO MORADO Y FUERA DE TIEMPO",
+      "sla": ""
+    }
+  ],
+  "hitos": [
+    {
+      "folio": 4702,
+      "ooad": "CHIHUAHUA",
+      "incidencia": "MANIFESTACION DE TRABAJADORES IMSS",
+      "hora": "13:06",
+      "fecha": "24/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "SUBDELEGACION CUAUHTEMOC",
+      "municipio": "CUAUHTEMOC",
+      "observaciones": "SE MANIFIESTAN TRABAJADORES IMSS DEMANDAN CONDICIONES LABORALES, FALTA DE PERSONAL E INSUMOS."
+    },
+    {
+      "folio": 4713,
+      "ooad": "SINALOA",
+      "incidencia": "ALTA CODIGO PLATA",
+      "hora": "18:38",
+      "fecha": "24/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "HGR1",
+      "municipio": "CULIACAN",
+      "observaciones": "ALTA DE CODIGO PLATA CAMA 4162. PERMANECIENDO 2 CODIGOS PLATA CON CUSTODIA"
+    },
+    {
+      "folio": 4718,
+      "ooad": "JALISCO",
+      "incidencia": "ARRIBO DE PRESO",
+      "hora": "19:26",
+      "fecha": "24/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "HGZ 14",
+      "municipio": "GUADALAJARA",
+      "observaciones": "INGRESO DE PRESA PARA REVISION MEDICA EN CARDIOLOGIA"
+    },
+    {
+      "folio": 4731,
+      "ooad": "IMSS CENTRALES",
+      "incidencia": "ORDEN DEL DIA",
+      "hora": "05:02",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "CECOE",
+      "municipio": "",
+      "observaciones": ""
+    },
+    {
+      "folio": 4741,
+      "ooad": "SINALOA",
+      "incidencia": "CODIGO PLATA",
+      "hora": "06:04",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "HGZ 3",
+      "municipio": "MAZATLAN",
+      "observaciones": "CODIGO PLATA SIN CUSTODIA"
+    },
+    {
+      "folio": 4742,
+      "ooad": "IMSS CENTRALES",
+      "incidencia": "CASETAS DIGNAS",
+      "hora": "06:11",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "",
+      "municipio": "",
+      "observaciones": "SOLICITA GIRAR INSTRUCCION PARA LEVANTAMIENTO DE NECESIDADES EN CASETAS"
+    },
+    {
+      "folio": 4743,
+      "ooad": "SONORA",
+      "incidencia": "PERSONA AGRESIVA",
+      "hora": "06:29",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTE INCOMPLETO",
+      "unidad": "HGZ 14",
+      "municipio": "HERMOSILLO",
+      "observaciones": "AGRESION DE MASCULINO HACIA GUARDIA. SIN TIPOLOGIA DE CODIGO MORADO Y FUERA DE TIEMPO."
+    },
+    {
+      "folio": 4748,
+      "ooad": "IMSS CENTRALES",
+      "incidencia": "SOLICITA AMPLIAR INFORMACION",
+      "hora": "06:41",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "",
+      "municipio": "",
+      "observaciones": "SOLICITA INFORMACION SOBRE LA PERSONA AGRESIVA E IMAGENES"
+    },
+    {
+      "folio": 4751,
+      "ooad": "SONORA",
+      "incidencia": "FOTOGRAFIAS",
+      "hora": "07:32",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "HGZ 14",
+      "municipio": "HERMOSILLO",
+      "observaciones": "INFORMA QUE NO SE TIENEN FOTOS DEL SUJETO AGRESIVO"
+    },
+    {
+      "folio": 4752,
+      "ooad": "IMSS CENTRALES",
+      "incidencia": "SOLICITA HORA DE INCIDENTE",
+      "hora": "09:26",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "",
+      "municipio": "",
+      "observaciones": "SOLICITA CONFIRMAR HORA DE HECHOS DE MASCULINO AGRESOR"
+    },
+    {
+      "folio": 4753,
+      "ooad": "SONORA",
+      "incidencia": "EXPLICACION DE FALTA DE REPORTE",
+      "hora": "09:44",
+      "fecha": "25/09/2026",
+      "estatus": "REPORTADO COMPLETO",
+      "unidad": "HGZ 14",
+      "municipio": "HERMOSILLO",
+      "observaciones": ""
+    }
+  ],
+  "sv_list": [
+    {"ooad": "AGUASCALIENTES", "unidad": "UMF 9", "municipio": "AGUASCALIENTES", "hora": "22:49", "fecha": "24/09/2026"},
+    {"ooad": "TAMAULIPAS", "unidad": "HRB3", "municipio": "TAMAULIPAS", "hora": "23:07", "fecha": "24/09/2026"},
+    {"ooad": "SAN LUIS POTOSÍ", "unidad": "CENTRO DE INVESTIGACION", "municipio": "SAN LUIS POTOSI", "hora": "23:25", "fecha": "24/09/2026"},
+    {"ooad": "SINALOA", "unidad": "HGZ3", "municipio": "MAZATLAN", "hora": "23:46", "fecha": "24/09/2026"},
+    {"ooad": "NAYARIT", "unidad": "UMF 25", "municipio": "NAYARIT", "hora": "00:36", "fecha": "25/09/2026"},
+    {"ooad": "SONORA", "unidad": "HGZ 54", "municipio": "SONORA", "hora": "00:52", "fecha": "25/09/2026"},
+    {"ooad": "JALISCO", "unidad": "UMF 4", "municipio": "ATEMAJAC", "hora": "01:11", "fecha": "25/09/2026"},
+    {"ooad": "NUEVO LEÓN", "unidad": "UMF 38", "municipio": "NUEVO LEON", "hora": "02:33", "fecha": "25/09/2026"},
+    {"ooad": "BAJA CALIFORNIA SUR", "unidad": "GUARDERIA 1", "municipio": "BCS", "hora": "03:07", "fecha": "25/09/2026"},
+    {"ooad": "DURANGO", "unidad": "UMF 6", "municipio": "DURANGO", "hora": "03:43", "fecha": "25/09/2026"}
+  ],
+  "missing_sv": ["BAJA CALIFORNIA", "CHIHUAHUA", "COAHUILA", "ZACATECAS"],
+  "regression": {
+    "n": 14,
+    "umbral": "N/A",
+    "curve": [
+      {"hora": "05:30", "minutos": 330, "prob": 0.0},
+      {"hora": "05:40", "minutos": 340, "prob": 0.0},
+      {"hora": "05:50", "minutos": 350, "prob": 0.0},
+      {"hora": "06:00", "minutos": 360, "prob": 0.0},
+      {"hora": "06:10", "minutos": 370, "prob": 0.0},
+      {"hora": "06:20", "minutos": 380, "prob": 0.0},
+      {"hora": "06:30", "minutos": 390, "prob": 0.0},
+      {"hora": "06:40", "minutos": 400, "prob": 0.0},
+      {"hora": "06:50", "minutos": 410, "prob": 0.0},
+      {"hora": "07:00", "minutos": 420, "prob": 0.0}
+    ],
+    "points": [
+      {"ooad": "NUEVO LEÓN", "hora": "05:32", "minutos": 332, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "ZACATECAS", "hora": "06:00", "minutos": 360, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "BAJA CALIFORNIA SUR", "hora": "06:00", "minutos": 360, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "JALISCO", "hora": "06:01", "minutos": 361, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "SONORA", "hora": "06:01", "minutos": 361, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "COAHUILA", "hora": "06:01", "minutos": 361, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "NAYARIT", "hora": "06:02", "minutos": 362, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "SINALOA", "hora": "06:03", "minutos": 363, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "TAMAULIPAS", "hora": "06:33", "minutos": 393, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "CHIHUAHUA", "hora": "06:34", "minutos": 394, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "SAN LUIS POTOSÍ", "hora": "06:38", "minutos": 398, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "AGUASCALIENTES", "hora": "06:41", "minutos": 401, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "DURANGO", "hora": "06:51", "minutos": 411, "fuera_tiempo": 0, "fecha": "25/09"},
+      {"ooad": "BAJA CALIFORNIA", "hora": "06:56", "minutos": 416, "fuera_tiempo": 0, "fecha": "25/09"}
+    ],
+    "note": "Regresión sobre matutinos 25/09 (14/14). 0 FT en cierres mat. Rango 05:32–06:56. El único incompleto del periodo es el incidente de persona agresiva en Sonora (no es cierre de turno)."
+  }
+};
+</script>
+<script>
+const m = DASH.meta;
+document.getElementById('kpiGrid').innerHTML = [
+  {label:'Registros totales', val:m.registros_reales, foot:`Ves24 ${m.ves24} · Mat25 ${m.mat25}`, cls:'accent-teal'},
+  {label:'Reportado completo', val:m.completo, foot:'1 incompleto · 0 FT formales', cls:'accent-green'},
+  {label:'Incompletos', val:m.incomp, foot:'Sonora · Persona agresiva', cls:'accent-red'},
+  {label:'Supervisiones SV', val:m.sv_count, foot:`${(DASH.missing_sv||[]).length} OOAD sin SV`, cls:'accent-amber'},
+  {label:'OOAD con desviación', val:DASH.ooad_summary.filter(o=>o.estatus!=='OK').length, foot:'Solo Sonora (incompleto)', cls:'accent-red'},
+].map(k => `<div class="kpi ${k.cls}"><div class="label">${k.label}</div><div class="num">${k.val}</div><div class="foot">${k.foot}</div></div>`).join('');
+
+const axis = document.getElementById('timelineAxis');
+const minStart = 330, minEnd = 430;
+let hourMarks = '';
+for (let h = 5; h <= 7; h++) {
+  const pct = ((h * 60) - minStart) / (minEnd - minStart) * 100;
+  if (pct >= 0 && pct <= 100) hourMarks += `<div class="hm" style="left:${pct}%">${String(h).padStart(2,'0')}:00</div>`;
+}
+axis.innerHTML = `<div class="timeline-line"></div><div class="timeline-hourmarks">${hourMarks}</div>`;
+DASH.regression.points.forEach(p => {
+  const pct = Math.min(100, Math.max(0, (p.minutos - minStart) / (minEnd - minStart) * 100));
+  const el = document.createElement('div');
+  el.className = 'tpoint ok';
+  el.style.left = pct + '%';
+  el.innerHTML = `<div class="tip">${p.ooad} · ${p.hora}</div>`;
+  axis.appendChild(el);
+});
+
+const sorted = [...DASH.ooad_summary].sort((a, b) => {
+  const wa = a.estatus !== 'OK' ? 0 : (a.sv === 0 ? 1 : 2);
+  const wb = b.estatus !== 'OK' ? 0 : (b.sv === 0 ? 1 : 2);
+  return wa - wb || a.ooad.localeCompare(b.ooad);
+});
+document.getElementById('ooadTableBody').innerHTML = sorted.map(o => {
+  const badge = o.estatus === 'OK'
+    ? '<span class="badge ok"><span class="badge-dot"></span>OK</span>'
+    : '<span class="badge miss"><span class="badge-dot"></span>Incompleto</span>';
+  return `<tr>
+    <td style="font-family:var(--display);font-weight:600">${o.ooad}</td>
+    <td class="muted">${o.coordinador || '—'}</td>
+    <td class="num">${o.ves24}</td>
+    <td class="num">${o.mat25}</td>
+    <td class="num" style="color:${o.incomp ? 'var(--red)' : 'var(--text-dim)'}">${o.incomp}</td>
+    <td class="num" style="color:${o.sv ? 'var(--green)' : 'var(--red)'}">${o.sv}</td>
+    <td>${badge}</td>
+  </tr>`;
+}).join('');
+document.getElementById('devCountNote').textContent =
+  `${DASH.ooad_summary.filter(o => o.estatus !== 'OK').length} de ${m.ooad_count} con desviación`;
+
+document.getElementById('devList').innerHTML = DASH.deviations.length
+  ? DASH.deviations.map(d => `
+  <div class="dev-item">
+    <div class="row1"><span class="title">${d.incidencia}</span><span class="meta">${d.hora} · ${d.estatus}</span></div>
+    <div class="loc">${d.ooad}${d.unidad ? ' · ' + d.unidad : ''}${d.municipio ? ' · ' + d.municipio : ''} · Folio ${d.folio} · ${d.fecha}</div>
+    ${d.observaciones ? `<div class="note">${d.observaciones}</div>` : ''}
+  </div>`).join('')
+  : '<div class="empty-box">Sin desviaciones de estatus formal</div>';
+
+document.getElementById('missList').innerHTML = (DASH.missing_sv || []).map(o =>
+  `<div class="miss-item">${o}</div>`
+).join('') || '<div class="empty-box">Todos con SV</div>';
+
+document.getElementById('hitoList').innerHTML = DASH.hitos.length
+  ? DASH.hitos.map(h => `
+  <div class="hito-item">
+    <div class="row1"><span class="title">${h.incidencia}</span><span class="meta">${h.hora} · ${(h.fecha || '').slice(0,5)}</span></div>
+    <div class="loc">${h.ooad}${h.unidad ? ' · ' + h.unidad : ''}${h.municipio ? ' · ' + h.municipio : ''} · Folio ${h.folio}</div>
+    ${h.observaciones ? `<div class="note">${h.observaciones}</div>` : ''}
+  </div>`).join('')
+  : `<div class="empty-box">Sin hitos</div>`;
+
+document.getElementById('svList').innerHTML = (DASH.sv_list || []).map(s => `
+  <div class="sv-item">
+    <span><span class="u">${s.ooad}</span> · ${s.unidad || '—'}</span>
+    <span style="font-family:var(--mono);color:var(--text-dim)">${s.hora} · ${(s.fecha || '').slice(0,5)}</span>
+  </div>`
+).join('') || `<div class="empty-box">Sin SV</div>`;
+
+const reg = DASH.regression;
+document.getElementById('regStats').innerHTML = `
+  <div class="stat-box"><div class="k">Casos FT mat 25</div><div class="v" style="color:var(--green)">0</div></div>
+  <div class="stat-box"><div class="k">N muestras</div><div class="v">${reg.n}</div></div>
+  <div class="stat-box"><div class="k">Más temprano</div><div class="v">05:32</div></div>
+  <div class="stat-box"><div class="k">Más tardío</div><div class="v">06:56</div></div>`;
+document.getElementById('regNotes').innerHTML = `
+  <li><b>Regresión logística no estimable</b> en cierres matutinos 25/09: 0 FT.</li>
+  <li>El único incompleto del periodo es el <b>incidente de persona agresiva en Sonora</b> (folio 4743), no un cierre de turno.</li>
+  <li>Todos los 14 OOAD enviaron tanto vespertino 24 como matutino 25.</li>
+  <li>Cierres mat 25 entre Nuevo León 05:32 y Baja California 06:56.</li>
+  <li>${reg.note || ''}</li>`;
+
+new Chart(document.getElementById('regChart'), {
+  type: 'line',
+  data: {
+    labels: reg.curve.map(c => c.hora),
+    datasets: [
+      {
+        label: 'Prob. FT mat (≈0)',
+        data: reg.curve.map(() => 0),
+        borderColor: '#2AC9B8',
+        backgroundColor: 'rgba(42,201,184,0.10)',
+        fill: true,
+        tension: 0.25,
+        pointRadius: 0,
+        borderWidth: 2
+      },
+      {
+        label: 'Observados 25/09',
+        data: reg.curve.map(c => {
+          const pt = reg.points.find(p => Math.abs(p.minutos - c.minutos) < 5);
+          return pt ? 0 : null;
+        }),
+        borderColor: 'transparent',
+        pointBackgroundColor: reg.curve.map(c => {
+          const pt = reg.points.find(p => Math.abs(p.minutos - c.minutos) < 5);
+          return pt ? '#33C077' : 'transparent';
+        }),
+        pointRadius: reg.curve.map(c => {
+          const pt = reg.points.find(p => Math.abs(p.minutos - c.minutos) < 5);
+          return pt ? 5 : 0;
+        }),
+        showLine: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: { color: '#8AA0C2', font: { family: 'Inter', size: 11 } }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#566A8E', maxTicksLimit: 8, font: { family: 'IBM Plex Mono', size: 10 } },
+        grid: { color: '#16233B' }
+      },
+      y: {
+        ticks: {
+          color: '#566A8E',
+          callback: v => v + '%',
+          font: { family: 'IBM Plex Mono', size: 10 }
+        },
+        grid: { color: '#16233B' },
+        min: 0,
+        max: 100
+      }
+    }
+  }
+});
+
+document.getElementById('errList').innerHTML = DASH.errores.map(e =>
+  `<div class="err-item"><span class="err-icon">▲</span><span>${e}</span></div>`
+).join('');
+</script>
+</body>
+</html>
