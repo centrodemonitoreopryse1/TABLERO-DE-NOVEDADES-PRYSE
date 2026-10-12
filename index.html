@@ -1,0 +1,412 @@
+[index.html.html](https://github.com/user-attachments/files/33352715/index.html.html)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tablero de Guardia — Bitácora 10–12/10/2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0A1220; --panel:#101B31; --panel-2:#0D1728;
+    --border:#1E2D48; --border-soft:#16233B; --text:#E7EDF7; --text-muted:#8AA0C2; --text-dim:#566A8E;
+    --teal:#2AC9B8; --amber:#F0A93E; --amber-soft:rgba(240,169,62,0.14);
+    --red:#F14C6B; --red-soft:rgba(241,76,107,0.14); --green:#33C077; --green-soft:rgba(51,192,119,0.13);
+    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1100px 500px at 12% -10%,rgba(42,201,184,0.10),transparent 60%),
+      radial-gradient(900px 500px at 100% 0%,rgba(240,169,62,0.06),transparent 55%),var(--bg);
+    color:var(--text); font-family:var(--body); line-height:1.5; padding:0 0 64px 0;
+  }
+  .masthead{border-bottom:1px solid var(--border-soft); padding:28px clamp(18px,4vw,56px) 22px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; position:relative}
+  .masthead::before{content:""; position:absolute; left:0; right:0; top:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--teal) 20%,var(--teal) 80%,transparent); opacity:0.55}
+  .brand-row{display:flex; align-items:center; gap:12px; margin-bottom:10px}
+  .brand-mark{width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--teal),#157A6E);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:600; font-size:13px; color:#04201B}
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim)}
+  h1{font-family:var(--display); font-weight:600; font-size:clamp(24px,3.4vw,34px); margin:2px 0 6px}
+  .sub{color:var(--text-muted); font-size:14px; max-width:900px}
+  .status-pill{font-family:var(--mono); font-size:12.5px; display:inline-flex; align-items:center; gap:8px;
+    background:var(--panel); border:1px solid var(--border); padding:9px 14px; border-radius:999px; color:var(--text-muted)}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--amber); box-shadow:0 0 0 3px var(--amber-soft)}
+  .wrap{padding:30px clamp(18px,4vw,56px) 0; max-width:1400px; margin:0 auto}
+  section{margin-bottom:40px}
+  .section-head{display:flex; align-items:baseline; gap:10px; margin-bottom:16px; flex-wrap:wrap}
+  .section-num{font-family:var(--mono); color:var(--teal); font-size:12.5px}
+  .section-title{font-family:var(--display); font-size:19px; font-weight:600}
+  .section-note{color:var(--text-dim); font-size:12.5px; margin-left:auto; font-family:var(--mono)}
+  .kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:14px}
+  @media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:linear-gradient(180deg,var(--panel),var(--panel-2)); border:1px solid var(--border); border-radius:14px; padding:18px}
+  .kpi .label{font-size:11.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; font-family:var(--mono)}
+  .kpi .num{font-family:var(--display); font-size:32px; font-weight:600; margin-top:8px}
+  .kpi .foot{font-size:12px; color:var(--text-muted); margin-top:4px}
+  .kpi.accent-red .num{color:var(--red)} .kpi.accent-amber .num{color:var(--amber)}
+  .kpi.accent-green .num{color:var(--green)} .kpi.accent-teal .num{color:var(--teal)}
+  .timeline-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:22px clamp(14px,3vw,26px) 18px}
+  .timeline-legend{display:flex; gap:18px; margin-bottom:14px; flex-wrap:wrap; font-size:12px; color:var(--text-muted); font-family:var(--mono)}
+  .legend-item{display:flex; align-items:center; gap:7px}
+  .legend-swatch{width:9px; height:9px; border-radius:2px}
+  .timeline-axis{position:relative; height:96px}
+  .timeline-line{position:absolute; left:0; right:0; top:48px; height:1px; background:var(--border)}
+  .timeline-hourmarks{position:absolute; left:0; right:0; top:64px; height:20px}
+  .hm{position:absolute; transform:translateX(-50%); font-family:var(--mono); font-size:10.5px; color:var(--text-dim)}
+  .hm::before{content:""; position:absolute; left:50%; top:-16px; width:1px; height:8px; background:var(--border-soft)}
+  .tpoint{position:absolute; top:38px; width:13px; height:13px; border-radius:50%; transform:translateX(-50%); border:2px solid var(--bg)}
+  .tpoint.ok{background:var(--green); box-shadow:0 0 0 3px var(--green-soft)}
+  .tpoint.late{background:var(--amber); box-shadow:0 0 0 3px var(--amber-soft)}
+  .tpoint .tip{visibility:hidden; opacity:0; position:absolute; bottom:22px; left:50%; transform:translateX(-50%);
+    background:#050B15; border:1px solid var(--border); color:var(--text); font-size:11px; font-family:var(--mono);
+    padding:6px 9px; border-radius:8px; white-space:nowrap; z-index:5; transition:opacity .15s}
+  .tpoint:hover .tip{visibility:visible; opacity:1}
+  .table-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  thead th{text-align:left; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-dim); padding:12px 12px; border-bottom:1px solid var(--border); background:var(--panel-2)}
+  tbody td{padding:10px 12px; border-bottom:1px solid var(--border-soft); vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(255,255,255,0.02)}
+  td.num,th.num{font-family:var(--mono); text-align:right}
+  .badge{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-family:var(--mono); font-size:10.5px; white-space:nowrap}
+  .badge.ok{background:var(--green-soft); color:var(--green)}
+  .badge.miss{background:var(--red-soft); color:var(--red)}
+  .badge.warn{background:var(--amber-soft); color:var(--amber)}
+  .badge-dot{width:5px; height:5px; border-radius:50%; background:currentColor}
+  .muted{color:var(--text-muted)}
+  .two-col{display:grid; grid-template-columns:1fr 1.1fr; gap:20px; align-items:start}
+  @media(max-width:980px){.two-col{grid-template-columns:1fr}}
+  .empty-box{border:1px dashed var(--border); border-radius:10px; padding:18px; color:var(--text-dim); font-size:13px; text-align:center; background:var(--panel)}
+  .hito-item{border:1px solid var(--border); background:var(--panel); border-radius:10px; padding:13px 15px; margin-bottom:10px; border-left:3px solid var(--amber)}
+  .hito-item .row1{display:flex; justify-content:space-between; gap:10px; margin-bottom:5px; flex-wrap:wrap}
+  .hito-item .title{font-family:var(--display); font-weight:600; font-size:13.5px}
+  .hito-item .meta{font-family:var(--mono); font-size:10.5px; color:var(--text-dim)}
+  .hito-item .loc{font-size:12px; color:var(--text-muted); margin-bottom:4px}
+  .hito-item .note{font-size:12px; color:var(--text-muted)}
+  .sv-item{border:1px solid var(--border-soft); background:var(--panel-2); border-radius:8px; padding:9px 12px; margin-bottom:7px; font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap}
+  .sv-item .u{color:var(--text); font-family:var(--display); font-weight:600; font-size:12.5px}
+  .miss-item{border:1px solid var(--border); border-left:3px solid var(--red); background:var(--panel); border-radius:10px; padding:9px 12px; margin-bottom:7px; font-family:var(--display); font-weight:600; font-size:12.5px}
+  .dev-item{border:1px solid var(--border); border-left:3px solid var(--amber); background:var(--panel); border-radius:10px; padding:9px 12px; margin-bottom:7px; font-size:12.5px}
+  .dev-item .t{font-family:var(--display); font-weight:600}
+  .dev-item.crit{border-left-color:var(--red)}
+  .reg-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:20px}
+  @media(max-width:980px){.reg-grid{grid-template-columns:1fr}}
+  .reg-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:20px}
+  .reg-stats{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .stat-box{background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:12px 14px}
+  .stat-box .k{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em}
+  .stat-box .v{font-family:var(--display); font-size:20px; font-weight:600; margin-top:4px}
+  .chart-wrap{height:260px; margin-top:8px}
+  .reg-notes{font-size:13px; color:var(--text-muted); margin-top:14px; padding-left:18px}
+  .reg-notes li{margin-bottom:8px}
+  .err-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:6px 0}
+  .err-item{display:flex; gap:12px; padding:12px 18px; border-bottom:1px solid var(--border-soft); font-size:13px; color:var(--text-muted)}
+  .err-item:last-child{border-bottom:none}
+  .err-icon{font-family:var(--mono); color:var(--amber); flex-shrink:0; font-size:12px; margin-top:2px}
+  footer{max-width:1400px; margin:40px auto 0; padding:20px clamp(18px,4vw,56px) 0; border-top:1px solid var(--border-soft);
+    color:var(--text-dim); font-size:12px; font-family:var(--mono); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+</style>
+</head>
+<body>
+<div class="masthead">
+  <div>
+    <div class="brand-row"><div class="brand-mark">CE</div><span class="eyebrow">Centro de Enlace · Monitoreo de Bitácora Diaria</span></div>
+    <h1>Tablero de Avances — Guardia 10–12/10/2026</h1>
+    <div class="sub">Fin de semana: vespertinos 10 y 11, matutinos 11 y 12. Código plata Sinaloa, nota informativa tormentas eléctricas, apagón BC (sin relevancia). <b>BCS sin vespertino 11</b>; <b>SLP matutino 12 incompleto</b>; Monitoreo con 2 incompletos (Jorge).</div>
+  </div>
+  <div class="status-pill"><span class="dot"></span> Ves 14+13 · Mat 14+14 · 3 incompletos · 84/88 completos</div>
+</div>
+
+<div class="wrap">
+  <section><div class="kpis" id="kpiGrid"></div></section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Línea de tiempo — matutinos 11 y 12/10</span>
+      <span class="section-note">11: 05:00–07:17 · 12: 05:00–06:33</span>
+    </div>
+    <div class="timeline-card">
+      <div class="timeline-legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--green)"></span> A tiempo</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--amber)"></span> Tardío / límite</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:8px">Matutinos 11/10</div>
+      <div class="timeline-axis" id="timelineAxis11"></div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin:16px 0 8px">Matutinos 12/10</div>
+      <div class="timeline-axis" id="timelineAxis12"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Estatus por Estado / OOAD</span>
+      <span class="section-note" id="devCountNote"></span>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Estado / OOAD</th><th>Coordinador</th>
+            <th class="num">Ves 10</th><th class="num">Mat 11</th>
+            <th class="num">Ves 11</th><th class="num">Mat 12</th>
+            <th class="num">SV</th><th>Estatus</th>
+          </tr>
+        </thead>
+        <tbody id="ooadTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Desviaciones, omisiones e hitos</span>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--red);margin-bottom:10px">Incompletos / omisiones / tardíos</div>
+        <div id="devList"></div>
+        <div class="section-title" style="font-size:14px;color:var(--amber);margin:18px 0 10px">Hitos / incidentes</div>
+        <div id="hitoList"></div>
+      </div>
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--teal);margin-bottom:10px">SV noche 10→11 (Jorge) — 13/14</div>
+        <div id="svList1"></div>
+        <div class="section-title" style="font-size:14px;color:var(--teal);margin:16px 0 10px">SV noche 11→12 (Kevin) — 10/14</div>
+        <div id="svList2"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Análisis de regresión — probabilidad de retraso</span>
+      <span class="section-note">Matutinos 11 y 12/10 combinados (n=28)</span>
+    </div>
+    <div class="reg-grid">
+      <div class="reg-card"><div class="chart-wrap"><canvas id="regChart"></canvas></div></div>
+      <div class="reg-card">
+        <div class="reg-stats" id="regStats"></div>
+        <ul class="reg-notes" id="regNotes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <span class="section-title">Errores e inconsistencias detectadas</span>
+    </div>
+    <div class="err-card" id="errList"></div>
+  </section>
+</div>
+<footer>
+  <span>Fuente: TABLA 10 AL 12 OCT 2026.xlsx · registros limpiados y validados</span>
+  <span>Generado como tablero de avances · 10–12/10/2026</span>
+</footer>
+
+<script>
+const DASH = {
+  "meta": {
+    "fecha": "10–12/10/2026",
+    "total_filas": 88,
+    "completo": 84,
+    "incomp": 3,
+    "sin_relev": 1,
+    "ves10": 14, "mat11": 14, "ves11": 13, "mat12": 14,
+    "sv1": 13, "sv2": 10
+  },
+  "errores": [
+    "BAJA CALIFORNIA SUR no reportó vespertino del 11/10 (único OOAD faltante de esa jornada).",
+    "BAJA CALIFORNIA duplicado en vespertino 11/10: folio 5471 (17:00) y 5479 (17:02).",
+    "SAN LUIS POTOSÍ matutino 12/10 (folio 5511, 06:22): REPORTE INCOMPLETO (sin observaciones).",
+    "MONITOREO folio 5440 (10/10 22:09): REPORTE INCOMPLETO — Jorge no realiza inicio de turno.",
+    "MONITOREO folio 5470 (11/10 07:00): REPORTE INCOMPLETO — Jorge nuevamente no realiza cierre de turno.",
+    "Jalisco matutino 11/10 a las 07:17 (tardío). Coahuila ves 10 a las 18:44 y Tamaulipas ves 11 a las 18:46 (tardíos).",
+    "Folio anómalo: Nuevo León matutino 11 tiene folio 4460 (fuera de secuencia; resto ~5456–5511).",
+    "Jalisco matutino 12: observación \"REPORTA SU CIERRE CON ERROR DE FECHA DEL DIA 11/10/2026\".",
+    "Typos: SOLICTA, RESGISTRADA, DE DE SU MADRE; municipio \"CALIFORNIA\" en lugar de Baja California.",
+    "SV noche 10→11 (Jorge): falta BCS. SV noche 11→12 (Kevin): faltan BCS, Coahuila, Sonora, Tamaulipas."
+  ],
+  "ooad_summary": [
+    {"ooad":"AGUASCALIENTES","coord":"RICARDO NANDI","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK"},
+    {"ooad":"BAJA CALIFORNIA","coord":"EDGAR ACOSTA ESCARCEGA","ves10":1,"mat11":1,"ves11":2,"mat12":1,"sv":2,"estatus":"OK (dup ves11)"},
+    {"ooad":"BAJA CALIFORNIA SUR","coord":"LEONCIO CORONADO GALINDO","ves10":1,"mat11":1,"ves11":0,"mat12":1,"sv":0,"estatus":"OMISIÓN VES 11"},
+    {"ooad":"CHIHUAHUA","coord":"HECTOR GABRIEL BOLLY","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK"},
+    {"ooad":"COAHUILA","coord":"CESAR FRANCISCO CEDILLO PEREZ","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":1,"estatus":"OK"},
+    {"ooad":"DURANGO","coord":"HECTOR ALFONSO LUJAN FLORIANO","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK"},
+    {"ooad":"JALISCO","coord":"MARIO ALBERTO FLORES ALEISSA","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK (mat11 tardío)"},
+    {"ooad":"NAYARIT","coord":"AARON RICARDO PALMA ROMAN","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK"},
+    {"ooad":"NUEVO LEÓN","coord":"JOSE ANTONIO RAMOS AGUILAR","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK"},
+    {"ooad":"SAN LUIS POTOSÍ","coord":"LUCIA RAPETA QUIRINO","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"INCOMPLETO MAT 12"},
+    {"ooad":"SINALOA","coord":"RAUL GALLARDO VELÀZQUEZ","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK"},
+    {"ooad":"SONORA","coord":"GUSTAVO ALONSO RASCON EVANS","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":1,"estatus":"OK"},
+    {"ooad":"TAMAULIPAS","coord":"RONALD HERNANDEZ","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":1,"estatus":"OK"},
+    {"ooad":"ZACATECAS","coord":"EDUARDO AYALA LOPEZ","ves10":1,"mat11":1,"ves11":1,"mat12":1,"sv":2,"estatus":"OK"}
+  ],
+  "hitos": [
+    {"folio":5437,"ooad":"IMSS CENTRALES","incidencia":"NOTA INFORMATIVA — tormentas eléctricas","hora":"19:13","fecha":"10/10","unidad":"CECOE","obs":"Solicita atención y reportes a la brevedad ante cualquier eventualidad en unidades por posibles tormentas eléctricas"},
+    {"folio":5439,"ooad":"SINALOA","incidencia":"INGRESO DE CÓDIGO PLATA","hora":"20:28","fecha":"10/10","unidad":"HGR#1 Culiacán","obs":"Paciente por herida de arma de fuego, traslado Cruz Roja, acompañada de madre, custodiada por Ejército Mexicano"},
+    {"folio":5446,"ooad":"BAJA CALIFORNIA","incidencia":"APAGÓN DE LUZ EN HGR","hora":"22:40","fecha":"10/10","unidad":"HGR#23","obs":"Apagón reportado; minutos después se restablece la luz. Estatus: SIN RELEVANCIA"},
+    {"folio":5455,"ooad":"IMSS CENTRALES","incidencia":"ORDEN DEL DÍA","hora":"05:18","fecha":"11/10","unidad":"CECOE","obs":""},
+    {"folio":5496,"ooad":"IMSS CENTRALES","incidencia":"ORDEN DEL DÍA","hora":"05:08","fecha":"12/10","unidad":"CECOE","obs":""}
+  ],
+  "sv1": [
+    {"ooad":"ZACATECAS","u":"Hospital de la Mujer","h":"22:13","f":"10/10"},
+    {"ooad":"DURANGO","u":"HGZ#2","h":"22:32","f":"10/10"},
+    {"ooad":"BAJA CALIFORNIA","u":"HGR#23","h":"23:04","f":"10/10"},
+    {"ooad":"AGUASCALIENTES","u":"HGR#1","h":"23:30","f":"10/10"},
+    {"ooad":"COAHUILA","u":"HR#51","h":"23:40","f":"10/10"},
+    {"ooad":"JALISCO","u":"HGZ#14","h":"00:15","f":"11/10"},
+    {"ooad":"SAN LUIS POTOSÍ","u":"HGZ#6","h":"00:55","f":"11/10"},
+    {"ooad":"SONORA","u":"Tienda IMSS","h":"01:25","f":"11/10"},
+    {"ooad":"NAYARIT","u":"HGZ#10","h":"01:45","f":"11/10"},
+    {"ooad":"CHIHUAHUA","u":"HGZ#23","h":"02:20","f":"11/10"},
+    {"ooad":"TAMAULIPAS","u":"UMF#70","h":"02:50","f":"11/10"},
+    {"ooad":"NUEVO LEÓN","u":"HGZ#4","h":"03:20","f":"11/10"},
+    {"ooad":"SINALOA","u":"UMF#40","h":"03:35","f":"11/10"}
+  ],
+  "sv2": [
+    {"ooad":"ZACATECAS","u":"UMF#44","h":"22:50","f":"11/10"},
+    {"ooad":"SINALOA","u":"CSS Los Mochis","h":"23:20","f":"11/10"},
+    {"ooad":"AGUASCALIENTES","u":"UMF#12","h":"23:48","f":"11/10"},
+    {"ooad":"SAN LUIS POTOSÍ","u":"UMF#47","h":"00:20","f":"12/10"},
+    {"ooad":"NUEVO LEÓN","u":"UMF#38","h":"00:44","f":"12/10"},
+    {"ooad":"DURANGO","u":"HGZ#2","h":"01:27","f":"12/10"},
+    {"ooad":"CHIHUAHUA","u":"UMF#41","h":"01:45","f":"12/10"},
+    {"ooad":"JALISCO","u":"HGZ#26","h":"02:15","f":"12/10"},
+    {"ooad":"NAYARIT","u":"UMF#4","h":"03:20","f":"12/10"},
+    {"ooad":"BAJA CALIFORNIA","u":"UMF#11","h":"03:40","f":"12/10"}
+  ],
+  "points11": [
+    {"ooad":"BCS","hora":"05:00","min":300,"late":0},{"ooad":"SONORA","hora":"05:01","min":301,"late":0},
+    {"ooad":"SINALOA","hora":"05:03","min":303,"late":0},{"ooad":"ZAC","hora":"06:00","min":360,"late":0},
+    {"ooad":"TAM","hora":"06:00","min":360,"late":0},{"ooad":"NL","hora":"06:02","min":362,"late":0},
+    {"ooad":"CHIH","hora":"06:07","min":367,"late":0},{"ooad":"AGS","hora":"06:07","min":367,"late":0},
+    {"ooad":"DUR","hora":"06:23","min":383,"late":0},{"ooad":"BC","hora":"06:27","min":387,"late":0},
+    {"ooad":"NAY","hora":"06:33","min":393,"late":0},{"ooad":"SLP","hora":"06:46","min":406,"late":0},
+    {"ooad":"COAH","hora":"06:50","min":410,"late":0},{"ooad":"JAL","hora":"07:17","min":437,"late":1}
+  ],
+  "points12": [
+    {"ooad":"BCS","hora":"05:00","min":300,"late":0},{"ooad":"SON","hora":"05:02","min":302,"late":0},
+    {"ooad":"SIN","hora":"05:02","min":302,"late":0},{"ooad":"BC","hora":"05:17","min":317,"late":0},
+    {"ooad":"ZAC","hora":"06:00","min":360,"late":0},{"ooad":"JAL","hora":"06:02","min":362,"late":0},
+    {"ooad":"TAM","hora":"06:05","min":365,"late":0},{"ooad":"NAY","hora":"06:08","min":368,"late":0},
+    {"ooad":"AGS","hora":"06:09","min":369,"late":0},{"ooad":"NL","hora":"06:09","min":369,"late":0},
+    {"ooad":"CHIH","hora":"06:20","min":380,"late":0},{"ooad":"SLP","hora":"06:22","min":382,"late":0},
+    {"ooad":"COAH","hora":"06:25","min":385,"late":0},{"ooad":"DUR","hora":"06:33","min":393,"late":0}
+  ]
+};
+</script>
+<script>
+const m=DASH.meta;
+document.getElementById('kpiGrid').innerHTML=[
+  {label:'Registros totales',val:m.total_filas,foot:`${m.completo} completos · ${m.incomp} incompletos`,cls:'accent-teal'},
+  {label:'Vespertinos',val:m.ves10+'+'+m.ves11,foot:'10/10: 14/14 · 11/10: 13/14 (falta BCS)',cls:'accent-amber'},
+  {label:'Matutinos',val:m.mat11+'+'+m.mat12,foot:'11 y 12: 14/14 (SLP 12 incompleto)',cls:'accent-green'},
+  {label:'Incompletos',val:m.incomp,foot:'Monitoreo×2 · SLP mat 12',cls:'accent-red'},
+  {label:'SV noches',val:m.sv1+'+'+m.sv2,foot:'Jorge 13/14 · Kevin 10/14',cls:'accent-amber'},
+].map(k=>`<div class="kpi ${k.cls}"><div class="label">${k.label}</div><div class="num">${k.val}</div><div class="foot">${k.foot}</div></div>`).join('');
+
+function drawTimeline(axisId, points, minStart, minEnd){
+  const axis=document.getElementById(axisId);
+  let hourMarks='';
+  for(let h=5;h<=7;h++){const pct=((h*60)-minStart)/(minEnd-minStart)*100; if(pct>=0&&pct<=100) hourMarks+=`<div class="hm" style="left:${pct}%">${String(h).padStart(2,'0')}:00</div>`;}
+  axis.innerHTML=`<div class="timeline-line"></div><div class="timeline-hourmarks">${hourMarks}</div>`;
+  points.forEach(p=>{
+    const pct=Math.min(100,Math.max(0,(p.min-minStart)/(minEnd-minStart)*100));
+    const el=document.createElement('div'); el.className='tpoint '+(p.late?'late':'ok'); el.style.left=pct+'%';
+    el.innerHTML=`<div class="tip">${p.ooad} · ${p.hora}</div>`; axis.appendChild(el);
+  });
+}
+drawTimeline('timelineAxis11', DASH.points11, 300, 450);
+drawTimeline('timelineAxis12', DASH.points12, 300, 410);
+
+const sorted=[...DASH.ooad_summary].sort((a,b)=>{
+  const score=o=>(o.ves11===0?2:0)+(o.estatus.includes('INCOMPLETO')?2:0)+(o.ves11>1?1:0);
+  return score(b)-score(a)||a.ooad.localeCompare(b.ooad);
+});
+document.getElementById('ooadTableBody').innerHTML=sorted.map(o=>{
+  let badge;
+  if(o.estatus.includes('OMISIÓN')) badge=`<span class="badge miss"><span class="badge-dot"></span>OMISIÓN VES 11</span>`;
+  else if(o.estatus.includes('INCOMPLETO')) badge=`<span class="badge miss"><span class="badge-dot"></span>INCOMPLETO MAT 12</span>`;
+  else if(o.estatus.includes('dup')) badge=`<span class="badge warn"><span class="badge-dot"></span>OK (dup)</span>`;
+  else if(o.estatus.includes('tardío')) badge=`<span class="badge warn"><span class="badge-dot"></span>OK (tardío)</span>`;
+  else badge=`<span class="badge ok"><span class="badge-dot"></span>OK</span>`;
+  return `<tr>
+  <td style="font-family:var(--display);font-weight:600">${o.ooad}</td>
+  <td class="muted" style="font-size:12px">${o.coord}</td>
+  <td class="num">${o.ves10}</td>
+  <td class="num">${o.mat11}</td>
+  <td class="num" style="color:${o.ves11===0?'var(--red)':(o.ves11>1?'var(--amber)':'inherit')}">${o.ves11}</td>
+  <td class="num" style="color:${o.estatus.includes('INCOMPLETO')?'var(--red)':'inherit'}">${o.mat12}</td>
+  <td class="num" style="color:${o.sv>=2?'var(--green)':(o.sv? 'var(--amber)':'var(--red)')}">${o.sv}</td>
+  <td>${badge}</td>
+</tr>`;
+}).join('');
+document.getElementById('devCountNote').textContent=`3 OOAD con desviación / omisión relevante`;
+
+document.getElementById('devList').innerHTML=`
+  <div class="dev-item crit"><span class="t">BAJA CALIFORNIA SUR</span> — sin reporte vespertino del 11/10.</div>
+  <div class="dev-item crit"><span class="t">SAN LUIS POTOSÍ</span> — matutino 12/10 (folio 5511, 06:22): REPORTE INCOMPLETO.</div>
+  <div class="dev-item crit"><span class="t">MONITOREO (Jorge)</span> — folio 5440: no inicio de turno 10/10 · folio 5470: no cierre de turno 11/10.</div>
+  <div class="dev-item"><span class="t">BAJA CALIFORNIA</span> — vespertino 11 duplicado (17:00 y 17:02).</div>
+  <div class="dev-item"><span class="t">JALISCO</span> — matutino 11 a las 07:17 (tardío) · matutino 12 con error de fecha (reportó como 11/10).</div>
+  <div class="dev-item"><span class="t">COAHUILA</span> — vespertino 10 a las 18:44 · <span class="t">TAMAULIPAS</span> — vespertino 11 a las 18:46.</div>`;
+
+document.getElementById('hitoList').innerHTML=DASH.hitos.map(h=>`
+  <div class="hito-item">
+    <div class="row1"><span class="title">${h.incidencia}</span><span class="meta">${h.hora} · ${h.fecha}</span></div>
+    <div class="loc">${h.ooad}${h.unidad?' · '+h.unidad:''} · Folio ${h.folio}</div>
+    ${h.obs?`<div class="note">${h.obs}</div>`:''}
+  </div>`).join('');
+
+document.getElementById('svList1').innerHTML=DASH.sv1.map(s=>`
+  <div class="sv-item"><span><span class="u">${s.ooad}</span> · ${s.u}</span><span style="font-family:var(--mono);color:var(--text-dim)">${s.h} · ${s.f}</span></div>`).join('')
+  +`<div class="miss-item" style="margin-top:8px">Sin SV: BAJA CALIFORNIA SUR</div>`;
+
+document.getElementById('svList2').innerHTML=DASH.sv2.map(s=>`
+  <div class="sv-item"><span><span class="u">${s.ooad}</span> · ${s.u}</span><span style="font-family:var(--mono);color:var(--text-dim)">${s.h} · ${s.f}</span></div>`).join('')
+  +`<div class="miss-item" style="margin-top:8px">Sin SV: BCS · COAHUILA · SONORA · TAMAULIPAS</div>`;
+
+document.getElementById('regStats').innerHTML=`
+  <div class="stat-box"><div class="k">Casos tardíos (mat)</div><div class="v" style="color:var(--amber)">1</div></div>
+  <div class="stat-box"><div class="k">N muestras</div><div class="v">28</div></div>
+  <div class="stat-box"><div class="k">Mat 11 rango</div><div class="v" style="font-size:16px">05:00–07:17</div></div>
+  <div class="stat-box"><div class="k">Mat 12 rango</div><div class="v" style="font-size:16px">05:00–06:33</div></div>`;
+document.getElementById('regNotes').innerHTML=`
+  <li><b>1 caso tardío formal:</b> Jalisco matutino 11 a las <b>07:17</b>.</li>
+  <li>Matutinos 12 todos ≤06:33 (SLP incompleto pero a las 06:22).</li>
+  <li>Omisiones: BCS sin ves 11; SLP mat 12 incompleto; Monitoreo×2 incompletos.</li>
+  <li>Regresión logística poco informativa con 1/28 casos tardíos en matutinos.</li>`;
+
+const curve=[];
+for(let m=300;m<=450;m+=5) curve.push({hora:`${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`,min:m,prob:m>=420?Math.min(1,(m-420)/30)*0.4:0});
+new Chart(document.getElementById('regChart'),{
+  type:'line',
+  data:{labels:curve.map(c=>c.hora),
+    datasets:[
+      {label:'Prob. FT (ilustrativa)',data:curve.map(c=>c.prob*100),borderColor:'#2AC9B8',backgroundColor:'rgba(42,201,184,0.10)',fill:true,tension:0.25,pointRadius:0,borderWidth:2},
+      {label:'Observados 11',data:curve.map(c=>{const pt=DASH.points11.find(p=>Math.abs(p.min-c.min)<3);return pt?(pt.late?80:5):null}),
+        borderColor:'transparent',pointBackgroundColor:curve.map(c=>{const pt=DASH.points11.find(p=>Math.abs(p.min-c.min)<3);return pt?(pt.late?'#F0A93E':'#33C077'):'transparent'}),
+        pointRadius:curve.map(c=>{const pt=DASH.points11.find(p=>Math.abs(p.min-c.min)<3);return pt?5:0}),showLine:false}
+    ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#8AA0C2',font:{family:'Inter',size:11}}}},
+    scales:{x:{ticks:{color:'#566A8E',maxTicksLimit:8,font:{family:'IBM Plex Mono',size:10}},grid:{color:'#16233B'}},
+      y:{ticks:{color:'#566A8E',callback:v=>v+'%',font:{family:'IBM Plex Mono',size:10}},grid:{color:'#16233B'},min:0,max:100}}
+  }
+});
+
+document.getElementById('errList').innerHTML=DASH.errores.map(e=>
+  `<div class="err-item"><span class="err-icon">▲</span><span>${e}</span></div>`).join('');
+</script>
+</body>
+</html>
