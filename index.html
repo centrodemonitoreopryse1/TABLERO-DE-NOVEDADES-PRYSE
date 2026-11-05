@@ -1,0 +1,299 @@
+[index.html.html](https://github.com/user-attachments/files/34443838/index.html.html)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tablero de Guardia — Bitácora 3–5 nov 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0A1220; --panel:#101B31; --panel-2:#0D1728;
+    --border:#1E2D48; --border-soft:#16233B; --text:#E7EDF7; --text-muted:#8AA0C2; --text-dim:#566A8E;
+    --teal:#2AC9B8; --amber:#F0A93E; --amber-soft:rgba(240,169,62,0.14);
+    --red:#F14C6B; --red-soft:rgba(241,76,107,0.14); --green:#33C077; --green-soft:rgba(51,192,119,0.13);
+    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1100px 500px at 12% -10%,rgba(42,201,184,0.10),transparent 60%),
+      radial-gradient(900px 500px at 100% 0%,rgba(240,169,62,0.06),transparent 55%),var(--bg);
+    color:var(--text); font-family:var(--body); line-height:1.5; padding:0 0 64px 0;
+  }
+  .masthead{border-bottom:1px solid var(--border-soft); padding:28px clamp(18px,4vw,56px) 22px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; position:relative}
+  .masthead::before{content:""; position:absolute; left:0; right:0; top:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--teal) 20%,var(--teal) 80%,transparent); opacity:0.55}
+  .brand-row{display:flex; align-items:center; gap:12px; margin-bottom:10px}
+  .brand-mark{width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--teal),#157A6E);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:600; font-size:13px; color:#04201B}
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim)}
+  h1{font-family:var(--display); font-weight:600; font-size:clamp(22px,3.2vw,32px); margin:2px 0 6px}
+  .sub{color:var(--text-muted); font-size:14px; max-width:980px}
+  .status-pill{font-family:var(--mono); font-size:12px; display:inline-flex; align-items:center; gap:8px;
+    background:var(--panel); border:1px solid var(--border); padding:9px 14px; border-radius:999px; color:var(--text-muted)}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px var(--green-soft)}
+  .wrap{padding:30px clamp(18px,4vw,56px) 0; max-width:1400px; margin:0 auto}
+  section{margin-bottom:40px}
+  .section-head{display:flex; align-items:baseline; gap:10px; margin-bottom:16px; flex-wrap:wrap}
+  .section-num{font-family:var(--mono); color:var(--teal); font-size:12.5px}
+  .section-title{font-family:var(--display); font-size:19px; font-weight:600}
+  .section-note{color:var(--text-dim); font-size:12.5px; margin-left:auto; font-family:var(--mono)}
+  .kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:14px}
+  @media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:linear-gradient(180deg,var(--panel),var(--panel-2)); border:1px solid var(--border); border-radius:14px; padding:18px}
+  .kpi .label{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; font-family:var(--mono)}
+  .kpi .num{font-family:var(--display); font-size:30px; font-weight:600; margin-top:8px}
+  .kpi .foot{font-size:12px; color:var(--text-muted); margin-top:4px}
+  .kpi.accent-amber .num{color:var(--amber)} .kpi.accent-green .num{color:var(--green)} .kpi.accent-teal .num{color:var(--teal)}
+  .table-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  thead th{text-align:left; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--text-dim); padding:12px 14px; border-bottom:1px solid var(--border); background:var(--panel-2); white-space:nowrap}
+  tbody td{padding:10px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(255,255,255,0.02)}
+  td.num,th.num{font-family:var(--mono); text-align:right}
+  .badge{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-family:var(--mono); font-size:10.5px; white-space:nowrap}
+  .badge.ok{background:var(--green-soft); color:var(--green)}
+  .badge.dia{background:rgba(42,201,184,0.15); color:var(--teal)}
+  .badge.noche{background:rgba(240,169,62,0.15); color:var(--amber)}
+  .badge-dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+  .muted{color:var(--text-muted)}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start}
+  @media(max-width:980px){.two-col{grid-template-columns:1fr}}
+  .empty-box{border:1px dashed var(--border); border-radius:10px; padding:18px; color:var(--text-dim); font-size:13px; text-align:center; background:var(--panel)}
+  .dev-item{border:1px solid var(--border); border-left:3px solid var(--amber); background:var(--panel); border-radius:10px; padding:12px 14px; margin-bottom:8px}
+  .dev-item .title{font-family:var(--display); font-weight:600; font-size:13px; color:var(--amber)}
+  .dev-item .meta{font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:3px}
+  .hito-item{border:1px solid var(--border); background:var(--panel); border-radius:10px; padding:12px 14px; margin-bottom:10px; border-left:3px solid var(--amber)}
+  .hito-item .row1{display:flex; justify-content:space-between; gap:10px; margin-bottom:4px; flex-wrap:wrap}
+  .hito-item .title{font-family:var(--display); font-weight:600; font-size:13.5px}
+  .hito-item .meta{font-family:var(--mono); font-size:11px; color:var(--text-dim)}
+  .hito-item .loc{font-size:12px; color:var(--text-muted); margin-bottom:4px}
+  .hito-item .note{font-size:12px; color:var(--text-muted)}
+  .reg-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:20px}
+  @media(max-width:980px){.reg-grid{grid-template-columns:1fr}}
+  .reg-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:20px}
+  .reg-stats{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .stat-box{background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:12px 14px}
+  .stat-box .k{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em}
+  .stat-box .v{font-family:var(--display); font-size:20px; font-weight:600; margin-top:4px}
+  .chart-wrap{height:260px; margin-top:8px}
+  .reg-notes{font-size:13px; color:var(--text-muted); margin-top:14px; padding-left:18px}
+  .reg-notes li{margin-bottom:8px}
+  .err-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:6px 0}
+  .err-item{display:flex; gap:12px; padding:12px 18px; border-bottom:1px solid var(--border-soft); font-size:13px; color:var(--text-muted)}
+  .err-item:last-child{border-bottom:none}
+  .err-icon{font-family:var(--mono); color:var(--amber); flex-shrink:0; font-size:12px; margin-top:2px}
+  footer{max-width:1400px; margin:40px auto 0; padding:20px clamp(18px,4vw,56px) 0; border-top:1px solid var(--border-soft);
+    color:var(--text-dim); font-size:12px; font-family:var(--mono); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+  .sv-filters{display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap}
+  .sv-filters button{font-family:var(--mono); font-size:12px; padding:7px 14px; border-radius:8px; border:1px solid var(--border);
+    background:var(--panel-2); color:var(--text-muted); cursor:pointer}
+  .sv-filters button.active{background:var(--teal); color:#04201B; border-color:var(--teal); font-weight:600}
+</style>
+</head>
+<body>
+<div class="masthead">
+  <div>
+    <div class="brand-row"><div class="brand-mark">CE</div><span class="eyebrow">Centro de Enlace · Monitoreo de Bitácora Diaria</span></div>
+    <h1>Tablero de Avances — Guardia 3–5 nov 2026</h1>
+    <div class="sub">0 FT · 14/14 cierres · Códigos plata BC/SLP/Sinaloa · Decálogo CECOE · Nota intento sustracción menor · 66 SV · 14/14 estados.</div>
+  </div>
+  <div class="status-pill"><span class="dot"></span> 0 FT · 28 ves · 28 mat · 66 SV · 14/14 estados</div>
+</div>
+
+<div class="wrap">
+  <section><div class="kpis" id="kpiGrid"></div></section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Estatus por Estado / OOAD (periodo)</span>
+      <span class="section-note">Ves 03–04 · Mat 04–05 · sin desviaciones de estatus</span>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Estado / OOAD</th><th>Coordinador</th>
+            <th class="num">Ves</th><th class="num">Mat</th>
+            <th class="num">Últ. hora mat</th>
+            <th class="num">SV</th><th>Estatus</th>
+          </tr>
+        </thead>
+        <tbody id="ooadTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Supervisiones virtuales unitarias (día y noche)</span>
+      <span class="section-note" id="svCountNote"></span>
+    </div>
+    <div class="sv-filters" id="svFilters">
+      <button class="active" data-f="ALL">Todas</button>
+      <button data-f="DÍA">Solo día</button>
+      <button data-f="NOCHE">Solo noche</button>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th><th>Folio</th><th>Turno</th><th>Hora</th><th>Fecha</th>
+            <th>Estado</th><th>Unidad</th><th>Municipio</th><th>Supervisor</th>
+          </tr>
+        </thead>
+        <tbody id="svTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Desviaciones e hitos</span>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--amber);margin-bottom:10px">Observaciones de captura</div>
+        <div id="devList"></div>
+      </div>
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--amber);margin-bottom:10px">Hitos / incidentes</div>
+        <div id="hitoList"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Análisis de regresión — matutinos 04–05/11</span>
+    </div>
+    <div class="reg-grid">
+      <div class="reg-card"><div class="chart-wrap"><canvas id="regChart"></canvas></div></div>
+      <div class="reg-card">
+        <div class="reg-stats" id="regStats"></div>
+        <ul class="reg-notes" id="regNotes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <span class="section-title">Errores e inconsistencias</span>
+    </div>
+    <div class="err-card" id="errList"></div>
+  </section>
+</div>
+<footer>
+  <span>Fuente: TABLA 3 AL 5 NOV 2026.xlsx · 66 SV</span>
+  <span>Generado · 03–05/11/2026</span>
+</footer>
+
+<script>
+const DASH = {"meta": {"fecha": "3 ves – 5 mat NOV 2026", "total_filas": 138, "registros_reales": 138, "ooad_count": 14, "completo": 138, "fuera": 0, "incomp": 0, "sv_count": 66, "ves": 28, "mat": 28, "sv_estados": 14}, "errores": ["Sin FT ni reportes incompletos de estatus. 14/14 ves (03 y 04) y 14/14 mat (04 y 05).", "Fechas erróneas: SV Chihuahua folio 6840 (2026-10-03); SV Nayarit 6841/6842 (nota de monitorista).", "SV unitarias: 66 · cobertura 14/14 estados.", "Typos: TENCNICAS, SOLICTA, INTEMTO, SUSTRACION, RAMA DE FUEGO, CORREPONDIENTES, DEEEGACION, CUSTODIADA.", "Hitos: códigos plata BC HGR1, SLP HGZ02, Sinaloa HGZ3×2 y HGZ49; decálogo CECOE (extorsión/acceso); nota redes intento sustracción menor.", "Vespertinos tardíos (≥19:00): Tamaulipas, SLP (03); Chihuahua, Zacatecas, Tamaulipas 20:18 (04).", "Rango mat: 05:01–06:49. 0 FT."], "ooad_summary": [{"ooad": "AGUASCALIENTES", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "RICARDO NANDI", "estatus": "OK", "sv": 4, "hora_mat": "06:00"}, {"ooad": "BAJA CALIFORNIA", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "EDGAR ACOSTA ESCARCEGA", "estatus": "OK", "sv": 8, "hora_mat": "05:32"}, {"ooad": "BAJA CALIFORNIA SUR", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "LEONCIO CORONADO GALINDO", "estatus": "OK", "sv": 8, "hora_mat": "05:02"}, {"ooad": "CHIHUAHUA", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "HECTOR GABRIEL BOLLY", "estatus": "OK", "sv": 3, "hora_mat": "06:46"}, {"ooad": "COAHUILA", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "CESAR FRANCISCO CEDILLO PEREZ", "estatus": "OK", "sv": 4, "hora_mat": "06:02"}, {"ooad": "DURANGO", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "HECTOR ALFONSO LUJAN FLORIANO", "estatus": "OK", "sv": 1, "hora_mat": "06:38"}, {"ooad": "JALISCO", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "MARIO ALBERTO FLORES ALEISSA", "estatus": "OK", "sv": 7, "hora_mat": "06:05"}, {"ooad": "NAYARIT", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "AARON RICARDO PALMA ROMAN", "estatus": "OK", "sv": 10, "hora_mat": "06:31"}, {"ooad": "NUEVO LEÓN", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "JOSE ANTONIO RAMOS AGUILAR", "estatus": "OK", "sv": 2, "hora_mat": "05:53"}, {"ooad": "SAN LUIS POTOSÍ", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "LUCIA RAPETA QUIRINO", "estatus": "OK", "sv": 6, "hora_mat": "06:46"}, {"ooad": "SINALOA", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "RAUL GALLARDO VELÀZQUEZ", "estatus": "OK", "sv": 3, "hora_mat": "05:24"}, {"ooad": "SONORA", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "GUSTAVO ALONSO RASCON EVANS", "estatus": "OK", "sv": 2, "hora_mat": "05:22"}, {"ooad": "TAMAULIPAS", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "RONALD HERNANDEZ", "estatus": "OK", "sv": 2, "hora_mat": "06:05"}, {"ooad": "ZACATECAS", "ves": 2, "mat": 2, "fuera": 0, "incomp": 0, "coordinador": "EDUARDO AYALA LOPEZ", "estatus": "OK", "sv": 6, "hora_mat": "06:49"}], "deviations": [{"ooad": "SV CHIHUAHUA", "tipo": "FECHA ERRÓNEA EN SV", "hora": "23:43", "fecha": "03/10→03/11", "estatus": "REPORTADO COMPLETO", "detalle": "Folio 6840 · fecha capturada 2026-10-03"}, {"ooad": "SV NAYARIT", "tipo": "FECHA MAL COLOCADA (×2)", "hora": "00:05 / 00:20", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "detalle": "Folios 6841 y 6842 · observaciones: coloca mal su fecha de supervisión"}], "hitos": [{"folio": 6830, "ooad": "BAJA CALIFORNIA", "incidencia": "CODIGO PLATA", "hora": "19:20", "fecha": "03/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "HGR 1", "municipio": "CALIFORNIA", "observaciones": "INGRESA PACIENTE EN CARRO PARTICULAR INGRESANDO POR HERIDA DE ARMA DE FUEGO ACOMPAÑADO DE FAMILIAR Y EN ESPERA DE AUTORIDADES CORRESPONDIENTES"}, {"folio": 6838, "ooad": "SV SAN LUIS POTOSÍ", "incidencia": "CODIGO PLATA", "hora": "21:30", "fecha": "03/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "HGZ 02", "municipio": "SAN LUIS POTOSI", "observaciones": "INGRESA PACIENTE POR TRASLADO CON HERIDA DE ARMA DE FUEGO EN ESPERA DE AUTORIDADES CORRESPONDIENTES"}, {"folio": 6848, "ooad": "IMSS CENTRALES", "incidencia": "ORDEN DEL DIA", "hora": "04:35", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "CECOE", "municipio": "", "observaciones": ""}, {"folio": 6856, "ooad": "IMSS CENTRALES", "incidencia": "DECALOGO", "hora": "06:09", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "CECOE", "municipio": "", "observaciones": "Con la finalidad de mantener el control de acceso y evitar vulnerar la seguridad bajo responsabilidad con ingresos no autorizados, así como al incremento de llamadas de extorsión, es importante reiterar:"}, {"folio": 6865, "ooad": "SINALOA", "incidencia": "CODIGO PLATA", "hora": "20:48", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "HGZ 3", "municipio": "MAZATLAN", "observaciones": "INGRESA POR TRASLADO EN AMBULANCIA DE PROTECION CIVIL POR HERIDA DE ARMA DE FUEGO INGRESADA CON CUSTODIA DE POLICIA MUNICIPAL"}, {"folio": 6873, "ooad": "IMSS CENTRALES", "incidencia": "NOTA INFORMATIVA DE REDES SOCIALES", "hora": "15:04", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "CECOE", "municipio": "", "observaciones": "SOLICTA INFORMACION SOBRE NOTICIA DE INTEMTO DE SUSTRACION DE MENOR"}, {"folio": 6876, "ooad": "SINALOA", "incidencia": "CODIGO PLATA", "hora": "16:25", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "HGZ 49", "municipio": "SINALOA", "observaciones": "INGRESA PACIENTE POR HERIDA DE RAMA DE FUEGO SE ENCUENTRA SIN CUSTODIA EN ESPERA DE AUTORIDADES CORREPONDIENTES"}, {"folio": 6888, "ooad": "SINALOA", "incidencia": "CODIGO PLATA", "hora": "17:09", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "HGZ 3", "municipio": "MAZATLAN", "observaciones": "INGRESA PACIENTE POR TRASLADO DE AMBULANCIA DE BOMBEROS CON CUSTODIADA POLICIAL"}, {"folio": 6915, "ooad": "IMSS CENTRALES", "incidencia": "ORDEN DEL DIA", "hora": "05:09", "fecha": "05/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "CECOE", "municipio": "", "observaciones": ""}, {"folio": 6922, "ooad": "IMSS CENTRALES", "incidencia": "DECALOGO", "hora": "06:12", "fecha": "05/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "CECOE", "municipio": "", "observaciones": "Con la finalidad de mantener el control de acceso y evitar vulnerar la seguridad bajo responsabilidad con ingresos no autorizados, así como al incremento de llamadas de extorsión, es importante reiterar:"}, {"folio": 6909, "ooad": "SINALOA", "incidencia": "CODIGO PLATA (en registro SV)", "hora": "23:20", "fecha": "04/11/2026", "estatus": "REPORTADO COMPLETO", "unidad": "HGZ 3", "municipio": "MAZATLAN", "observaciones": "INGRESA PACIENTE POR HERIDA DE ARMA DE FUEGO CON CUSTODIA"}], "sv_list": [{"folio": 6840, "ooad": "CHIHUAHUA", "unidad": "UMF 21", "municipio": "CHIHUAHUA", "hora": "23:43", "fecha": "03/10/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6802, "ooad": "BAJA CALIFORNIA", "unidad": "TIENDA IMSS", "municipio": "B.C.NORTE", "hora": "12:32", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6803, "ooad": "BAJA CALIFORNIA", "unidad": "UMF 11", "municipio": "B.C.NORTE", "hora": "13:05", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6804, "ooad": "BAJA CALIFORNIA", "unidad": "UMF 10", "municipio": "B.C.NORTE", "hora": "13:36", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6805, "ooad": "BAJA CALIFORNIA", "unidad": "UMF 25", "municipio": "B.C.NORTE", "hora": "14:07", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6806, "ooad": "BAJA CALIFORNIA", "unidad": "UMF 24", "municipio": "B.C.NORTE", "hora": "14:14", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6807, "ooad": "BAJA CALIFORNIA", "unidad": "UMF 38", "municipio": "B.C.NORTE", "hora": "14:35", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6808, "ooad": "BAJA CALIFORNIA SUR", "unidad": "UMF 16", "municipio": "B.C.SUR", "hora": "15:15", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6809, "ooad": "BAJA CALIFORNIA SUR", "unidad": "HGZ 19", "municipio": "B.C.SUR", "hora": "15:25", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6810, "ooad": "BAJA CALIFORNIA SUR", "unidad": "HGZ10", "municipio": "B.C.SUR", "hora": "15:40", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6811, "ooad": "BAJA CALIFORNIA", "unidad": "UMF 3", "municipio": "B.C.NORTE", "hora": "15:40", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6812, "ooad": "BAJA CALIFORNIA SUR", "unidad": "HGZ 3", "municipio": "B.C.SUR", "hora": "16:13", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6813, "ooad": "BAJA CALIFORNIA SUR", "unidad": "HGZ 35", "municipio": "B.C.SUR", "hora": "16:28", "fecha": "03/11/2026", "coord": "MARCO ANTONIO GATICA", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6814, "ooad": "BAJA CALIFORNIA SUR", "unidad": "HGZ 10", "municipio": "B.C.SUR", "hora": "16:55", "fecha": "03/11/2026", "coord": "JORGE MAYA ESTEBAN", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6815, "ooad": "CHIHUAHUA", "unidad": "HGSZ MF 23", "municipio": "CHIHUAHUA", "hora": "17:15", "fecha": "03/11/2026", "coord": "JORGE MAYA ESTEBAN", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6832, "ooad": "SAN LUIS POTOSÍ", "unidad": "OFC TENCNICAS", "municipio": "SAN LUIS POTOSI", "hora": "22:10", "fecha": "03/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6833, "ooad": "ZACATECAS", "unidad": "HR 12", "municipio": "ZACATECAS", "hora": "22:30", "fecha": "03/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6834, "ooad": "ZACATECAS", "unidad": "UMF 13", "municipio": "ZACATECAS", "hora": "22:47", "fecha": "03/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6835, "ooad": "AGUASCALIENTES", "unidad": "UMF 6", "municipio": "AGUASCALIENTES", "hora": "22:57", "fecha": "03/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6836, "ooad": "JALISCO", "unidad": "HGZ 14", "municipio": "JALISCO", "hora": "23:05", "fecha": "03/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6837, "ooad": "AGUASCALIENTES", "unidad": "UMF 9", "municipio": "AGUASCALIENTES", "hora": "23:08", "fecha": "03/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6839, "ooad": "SONORA", "unidad": "UMF 27", "municipio": "SONORA", "hora": "23:25", "fecha": "03/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6841, "ooad": "NAYARIT", "unidad": "HGSZ 15", "municipio": "NAYARIT", "hora": "00:05", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6842, "ooad": "NAYARIT", "unidad": "UMF 24", "municipio": "NAYARIT", "hora": "00:20", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6843, "ooad": "BAJA CALIFORNIA", "unidad": "UMF 3", "municipio": "B.C.NORTE", "hora": "00:37", "fecha": "04/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6844, "ooad": "NUEVO LEÓN", "unidad": "HGZ 4", "municipio": "NUEVO LEON", "hora": "00:40", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6845, "ooad": "COAHUILA", "unidad": "GUARDERIA", "municipio": "MONCLOVA", "hora": "01:00", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6846, "ooad": "COAHUILA", "unidad": "UMF 25", "municipio": "COAHUILA", "hora": "01:25", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6847, "ooad": "JALISCO", "unidad": "HGR110", "municipio": "JALISCO", "hora": "01:38", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6867, "ooad": "JALISCO", "unidad": "HGR 110", "municipio": "JALISCO", "hora": "10:24", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6868, "ooad": "JALISCO", "unidad": "HGR 46", "municipio": "JALISCO", "hora": "11:03", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6870, "ooad": "NAYARIT", "unidad": "GUARDERIA", "municipio": "NAYARIT", "hora": "11:35", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6869, "ooad": "JALISCO", "unidad": "HGSZ 27", "municipio": "JALISCO", "hora": "11:47", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6871, "ooad": "JALISCO", "unidad": "HGZ 14", "municipio": "JALISCO", "hora": "12:30", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6872, "ooad": "NAYARIT", "unidad": "HGSZ 8", "municipio": "TUXPAN", "hora": "13:02", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6874, "ooad": "NAYARIT", "unidad": "HGZ 1", "municipio": "TEPIC", "hora": "16:42", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6875, "ooad": "NAYARIT", "unidad": "HGZ 10", "municipio": "NAYARIT", "hora": "16:58", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6877, "ooad": "NAYARIT", "unidad": "SUB ALMACEN", "municipio": "NAYARIT", "hora": "17:26", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6887, "ooad": "NAYARIT", "unidad": "UMF 12", "municipio": "NAYARIT", "hora": "17:50", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6889, "ooad": "NAYARIT", "unidad": "UMF 13", "municipio": "SAN BLAS NAYARIT", "hora": "18:18", "fecha": "04/11/2026", "coord": "FELIX DIAZ ELI", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6896, "ooad": "SAN LUIS POTOSÍ", "unidad": "HGSZ 4", "municipio": "EL NARANJO", "hora": "22:18", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6897, "ooad": "DURANGO", "unidad": "UMF 40", "municipio": "DURANGO", "hora": "22:27", "fecha": "04/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6898, "ooad": "SAN LUIS POTOSÍ", "unidad": "GUARDERIA", "municipio": "SAN LUIS POTOSI", "hora": "22:40", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6899, "ooad": "ZACATECAS", "unidad": "NEFROLOGIA", "municipio": "ZACATECAS", "hora": "22:40", "fecha": "04/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6900, "ooad": "BAJA CALIFORNIA SUR", "unidad": "UMF35", "municipio": "B.C.SUR", "hora": "22:55", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6901, "ooad": "ZACATECAS", "unidad": "UMF 36", "municipio": "ZACATECAS", "hora": "23:06", "fecha": "04/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6902, "ooad": "BAJA CALIFORNIA SUR", "unidad": "GUARDERIA 1", "municipio": "B.C.SUR", "hora": "23:20", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6909, "ooad": "SINALOA", "unidad": "HGZ 3", "municipio": "MAZATLAN", "hora": "23:20", "fecha": "04/11/2026", "coord": "RAUL GALLARDO VELÀZQUEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6903, "ooad": "AGUASCALIENTES", "unidad": "SEDE", "municipio": "AGUASCALIENTES", "hora": "23:36", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6904, "ooad": "JALISCO", "unidad": "UMF 48", "municipio": "JALISCO", "hora": "23:40", "fecha": "04/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6905, "ooad": "AGUASCALIENTES", "unidad": "CSS", "municipio": "AGUASCALIENTES", "hora": "23:55", "fecha": "04/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6907, "ooad": "SONORA", "unidad": "HGSMF 6", "municipio": "SONORA", "hora": "00:00", "fecha": "05/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6906, "ooad": "CHIHUAHUA", "unidad": "SUB DEEEGACION", "municipio": "CHIHUAHUA", "hora": "00:02", "fecha": "05/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6908, "ooad": "TAMAULIPAS", "unidad": "HGZ 13", "municipio": "TAMAULIPAS", "hora": "00:10", "fecha": "05/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6910, "ooad": "TAMAULIPAS", "unidad": "UMF 36", "municipio": "MATAMOROS", "hora": "00:30", "fecha": "05/11/2026", "coord": "EVELIN YAJAIRA SANCHEZ", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6911, "ooad": "COAHUILA", "unidad": "UMF 70", "municipio": "COAHUILA", "hora": "00:44", "fecha": "05/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6912, "ooad": "COAHUILA", "unidad": "GUARDERIA SALTILLO", "municipio": "SALTILLO", "hora": "01:20", "fecha": "05/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6913, "ooad": "NUEVO LEÓN", "unidad": "HGZ 4", "municipio": "NUEVO LEON", "hora": "01:50", "fecha": "05/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6914, "ooad": "NAYARIT", "unidad": "UMF 25", "municipio": "NAYARIT", "hora": "02:15", "fecha": "05/11/2026", "coord": "JOSE PABLO GALICIA", "turno": "NOCHE", "estatus": "REPORTADO COMPLETO"}, {"folio": 6933, "ooad": "SAN LUIS POTOSÍ", "unidad": "HGZ 2", "municipio": "SAN LUIS POTOSI", "hora": "10:40", "fecha": "05/11/2026", "coord": "ELI FELIX DIAZ", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6934, "ooad": "SINALOA", "unidad": "HGZ 51", "municipio": "SINALOA", "hora": "11:10", "fecha": "05/11/2026", "coord": "ELI FELIX DIAZ", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6935, "ooad": "SAN LUIS POTOSÍ", "unidad": "HGZ 4", "municipio": "SAN LUIS POTOSI", "hora": "11:15", "fecha": "05/11/2026", "coord": "ELI FELIX DIAZ", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6936, "ooad": "SINALOA", "unidad": "UMF 7", "municipio": "SINALOA", "hora": "11:40", "fecha": "05/11/2026", "coord": "ELI FELIX DIAZ", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6938, "ooad": "SAN LUIS POTOSÍ", "unidad": "HGZ 50", "municipio": "SAN LUIS POTOSI", "hora": "12:00", "fecha": "05/11/2026", "coord": "ELI FELIX DIAZ", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6937, "ooad": "ZACATECAS", "unidad": "HOSPITAL DE LA MUJER", "municipio": "FRESNILLO", "hora": "12:10", "fecha": "05/11/2026", "coord": "ELI FELIX DIAZ", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}, {"folio": 6939, "ooad": "ZACATECAS", "unidad": "HGZ 1", "municipio": "ZACATECAS", "hora": "12:25", "fecha": "05/11/2026", "coord": "JORGE MAYA ESTEBAN", "turno": "DÍA", "estatus": "REPORTADO COMPLETO"}], "missing_sv": [], "regression": {"n": 28, "ft": 0, "umbral": "N/A", "curve": [{"hora": "04:00", "minutos": 240, "prob": 0.0}, {"hora": "04:05", "minutos": 245, "prob": 0.0}, {"hora": "04:10", "minutos": 250, "prob": 0.0}, {"hora": "04:15", "minutos": 255, "prob": 0.0}, {"hora": "04:20", "minutos": 260, "prob": 0.0}, {"hora": "04:25", "minutos": 265, "prob": 0.0}, {"hora": "04:30", "minutos": 270, "prob": 0.0}, {"hora": "04:35", "minutos": 275, "prob": 0.0}, {"hora": "04:40", "minutos": 280, "prob": 0.0}, {"hora": "04:45", "minutos": 285, "prob": 0.0}, {"hora": "04:50", "minutos": 290, "prob": 0.0}, {"hora": "04:55", "minutos": 295, "prob": 0.0}, {"hora": "05:00", "minutos": 300, "prob": 0.0}, {"hora": "05:05", "minutos": 305, "prob": 0.0}, {"hora": "05:10", "minutos": 310, "prob": 0.0}, {"hora": "05:15", "minutos": 315, "prob": 0.0}, {"hora": "05:20", "minutos": 320, "prob": 0.0}, {"hora": "05:25", "minutos": 325, "prob": 0.0}, {"hora": "05:30", "minutos": 330, "prob": 0.0}, {"hora": "05:35", "minutos": 335, "prob": 0.0}, {"hora": "05:40", "minutos": 340, "prob": 0.0}, {"hora": "05:45", "minutos": 345, "prob": 0.0}, {"hora": "05:50", "minutos": 350, "prob": 0.0}, {"hora": "05:55", "minutos": 355, "prob": 0.0}, {"hora": "06:00", "minutos": 360, "prob": 0.0}, {"hora": "06:05", "minutos": 365, "prob": 0.0}, {"hora": "06:10", "minutos": 370, "prob": 0.0}, {"hora": "06:15", "minutos": 375, "prob": 0.0}, {"hora": "06:20", "minutos": 380, "prob": 0.0}, {"hora": "06:25", "minutos": 385, "prob": 0.0}, {"hora": "06:30", "minutos": 390, "prob": 0.0}, {"hora": "06:35", "minutos": 395, "prob": 0.0}, {"hora": "06:40", "minutos": 400, "prob": 0.0}, {"hora": "06:45", "minutos": 405, "prob": 0.0}, {"hora": "06:50", "minutos": 410, "prob": 0.0}, {"hora": "06:55", "minutos": 415, "prob": 0.0}, {"hora": "07:00", "minutos": 420, "prob": 0.0}, {"hora": "07:05", "minutos": 425, "prob": 0.0}, {"hora": "07:10", "minutos": 430, "prob": 0.0}, {"hora": "07:15", "minutos": 435, "prob": 0.0}, {"hora": "07:20", "minutos": 440, "prob": 0.0}, {"hora": "07:25", "minutos": 445, "prob": 0.0}], "points": [{"ooad": "AGUASCALIENTES", "hora": "06:01", "minutos": 361, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "AGUASCALIENTES", "hora": "06:00", "minutos": 360, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "BAJA CALIFORNIA", "hora": "05:32", "minutos": 332, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "BAJA CALIFORNIA", "hora": "05:32", "minutos": 332, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "BAJA CALIFORNIA SUR", "hora": "05:01", "minutos": 301, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "BAJA CALIFORNIA SUR", "hora": "05:02", "minutos": 302, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "CHIHUAHUA", "hora": "06:28", "minutos": 388, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "CHIHUAHUA", "hora": "06:46", "minutos": 406, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "COAHUILA", "hora": "06:16", "minutos": 376, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "COAHUILA", "hora": "06:02", "minutos": 362, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "DURANGO", "hora": "06:01", "minutos": 361, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "DURANGO", "hora": "06:38", "minutos": 398, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "JALISCO", "hora": "06:01", "minutos": 361, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "JALISCO", "hora": "06:05", "minutos": 365, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "NAYARIT", "hora": "06:23", "minutos": 383, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "NAYARIT", "hora": "06:31", "minutos": 391, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "NUEVO LEÓN", "hora": "06:17", "minutos": 377, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "NUEVO LEÓN", "hora": "05:53", "minutos": 353, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "SAN LUIS POTOSÍ", "hora": "06:36", "minutos": 396, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "SAN LUIS POTOSÍ", "hora": "06:46", "minutos": 406, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "SINALOA", "hora": "05:04", "minutos": 304, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "SINALOA", "hora": "05:24", "minutos": 324, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "SONORA", "hora": "05:12", "minutos": 312, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "SONORA", "hora": "05:22", "minutos": 322, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "TAMAULIPAS", "hora": "06:15", "minutos": 375, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "TAMAULIPAS", "hora": "06:05", "minutos": 365, "fuera_tiempo": 0, "fecha": "05/11/2026"}, {"ooad": "ZACATECAS", "hora": "06:00", "minutos": 360, "fuera_tiempo": 0, "fecha": "04/11/2026"}, {"ooad": "ZACATECAS", "hora": "06:49", "minutos": 409, "fuera_tiempo": 0, "fecha": "05/11/2026"}], "note": "0 FT. 28 matutinos (04 y 05/11). Rango 05:01–06:49."}};
+</script>
+<script>
+const m=DASH.meta;
+document.getElementById('kpiGrid').innerHTML=[
+  {label:'Registros',val:m.registros_reales,foot:`${m.ves} ves · ${m.mat} mat · ${m.sv_count} SV`,cls:'accent-teal'},
+  {label:'Completos',val:m.completo,foot:'100% estatus formal',cls:'accent-green'},
+  {label:'Fuera de tiempo',val:0,foot:'sin FT',cls:'accent-green'},
+  {label:'Incompletos',val:0,foot:'14/14 cierres',cls:'accent-green'},
+  {label:'SV unitarias',val:m.sv_count,foot:'14/14 estados',cls:'accent-teal'},
+].map(k=>`<div class="kpi ${k.cls}"><div class="label">${k.label}</div><div class="num">${k.val}</div><div class="foot">${k.foot}</div></div>`).join('');
+
+const sorted=[...DASH.ooad_summary].sort((a,b)=>(a.sv-b.sv)||a.ooad.localeCompare(b.ooad));
+document.getElementById('ooadTableBody').innerHTML=sorted.map(o=>`<tr>
+  <td style="font-family:var(--display);font-weight:600">${o.ooad}</td>
+  <td class="muted">${o.coordinador||'—'}</td>
+  <td class="num">${o.ves}</td>
+  <td class="num">${o.mat}</td>
+  <td class="num" style="font-family:var(--mono);color:var(--text-muted)">${o.hora_mat}</td>
+  <td class="num" style="color:var(--green)">${o.sv}</td>
+  <td><span class="badge ok"><span class="badge-dot"></span>OK</span></td>
+</tr>`).join('');
+
+const diaN=DASH.sv_list.filter(s=>s.turno==='DÍA').length;
+const nocheN=DASH.sv_list.filter(s=>s.turno==='NOCHE').length;
+document.getElementById('svCountNote').textContent=`${DASH.sv_list.length} total · ${diaN} día · ${nocheN} noche`;
+
+function renderSV(filter){
+  const list=filter==='ALL'?DASH.sv_list:DASH.sv_list.filter(s=>s.turno===filter);
+  document.getElementById('svTableBody').innerHTML=list.map((s,i)=>`
+    <tr>
+      <td class="num">${i+1}</td>
+      <td style="font-family:var(--mono)">${s.folio||'—'}</td>
+      <td><span class="badge ${s.turno==='DÍA'?'dia':'noche'}">${s.turno}</span></td>
+      <td style="font-family:var(--mono)">${s.hora}</td>
+      <td class="muted">${s.fecha}</td>
+      <td style="font-family:var(--display);font-weight:600">${s.ooad}</td>
+      <td>${s.unidad}</td>
+      <td class="muted">${s.municipio}</td>
+      <td class="muted" style="font-size:11.5px">${s.coord}</td>
+    </tr>`).join('')||`<tr><td colspan="9" class="muted" style="text-align:center">Sin registros</td></tr>`;
+}
+renderSV('ALL');
+document.getElementById('svFilters').addEventListener('click',e=>{
+  const btn=e.target.closest('button'); if(!btn) return;
+  document.querySelectorAll('#svFilters button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderSV(btn.dataset.f);
+});
+
+document.getElementById('devList').innerHTML=DASH.deviations.length?DASH.deviations.map(d=>`
+  <div class="dev-item">
+    <div class="title">${d.ooad} — ${d.tipo}</div>
+    <div class="meta">${d.estatus} · ${d.hora} · ${d.fecha}<br>${d.detalle||''}</div>
+  </div>`).join(''):`<div class="empty-box">Sin desviaciones de estatus</div>`;
+
+document.getElementById('hitoList').innerHTML=DASH.hitos.length?DASH.hitos.map(h=>`
+  <div class="hito-item">
+    <div class="row1"><span class="title">${h.incidencia}</span><span class="meta">${h.hora} · ${h.fecha}</span></div>
+    <div class="loc">${h.ooad}${h.unidad?' · '+h.unidad:''} · Folio ${h.folio}</div>
+    ${h.observaciones?`<div class="note">${h.observaciones}</div>`:''}
+  </div>`).join(''):`<div class="empty-box">Sin hitos</div>`;
+
+const reg=DASH.regression;
+document.getElementById('regStats').innerHTML=`
+  <div class="stat-box"><div class="k">Matutinos</div><div class="v">${reg.n}</div></div>
+  <div class="stat-box"><div class="k">FT ≥07:00</div><div class="v" style="color:var(--green)">0</div></div>
+  <div class="stat-box"><div class="k">Más temprano</div><div class="v">05:01</div></div>
+  <div class="stat-box"><div class="k">Más tardío</div><div class="v">06:49</div></div>`;
+document.getElementById('regNotes').innerHTML=`
+  <li><b>Regresión no estimable:</b> 0 casos ≥07:00.</li>
+  <li>Rango: <b>05:01</b> (BCS) – <b>06:49</b> (Zacatecas 05/11).</li>
+  <li>Vespertinos tardíos (≥19:00) en Tamaulipas, SLP, Chihuahua, Zacatecas — marcados completos.</li>
+  <li>${reg.note||''}</li>`;
+
+const ptByMin={};
+reg.points.forEach(p=>{const k=Math.round(p.minutos/5)*5; if(!ptByMin[k]) ptByMin[k]=[]; ptByMin[k].push(p);});
+new Chart(document.getElementById('regChart'),{
+  type:'line',
+  data:{labels:reg.curve.map(c=>c.hora),
+    datasets:[
+      {label:'Prob. FT (≈0)',data:reg.curve.map(()=>0),borderColor:'#2AC9B8',backgroundColor:'rgba(42,201,184,0.10)',fill:true,tension:0.25,pointRadius:0,borderWidth:2},
+      {label:'Observados',data:reg.curve.map(c=>(ptByMin[c.minutos]||[]).length?0:null),
+        borderColor:'transparent',
+        pointBackgroundColor:reg.curve.map(c=>(ptByMin[c.minutos]||[]).length?'#33C077':'transparent'),
+        pointRadius:reg.curve.map(c=>(ptByMin[c.minutos]||[]).length?5:0),
+        showLine:false}
+    ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#8AA0C2',font:{family:'Inter',size:11}}}},
+    scales:{x:{ticks:{color:'#566A8E',maxTicksLimit:10,font:{family:'IBM Plex Mono',size:10}},grid:{color:'#16233B'}},
+      y:{ticks:{color:'#566A8E',callback:v=>v+'%',font:{family:'IBM Plex Mono',size:10}},grid:{color:'#16233B'},min:0,max:100}}
+  }
+});
+
+document.getElementById('errList').innerHTML=DASH.errores.map(e=>
+  `<div class="err-item"><span class="err-icon">▲</span><span>${e}</span></div>`).join('');
+</script>
+</body>
+</html>
